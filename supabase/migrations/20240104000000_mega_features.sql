@@ -15,6 +15,8 @@ create table public.notifications (
   title text not null,
   message text not null,
   link text, -- optional path to navigate to
+  related_entity_id uuid, -- Generic FK: item_id or claim_id (legacy)
+  related_entity_type text, -- 'item' | 'claim' (legacy)
   is_read boolean default false not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
