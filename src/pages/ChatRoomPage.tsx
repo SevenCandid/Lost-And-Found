@@ -15,7 +15,7 @@ type User = Database['public']['Tables']['users']['Row']
 export function ChatRoomPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   
   const [room, setRoom] = useState<Room | null>(null)
   const [otherUser, setOtherUser] = useState<User | null>(null)
@@ -93,8 +93,18 @@ export function ChatRoomPage() {
       if (messagesData) {
         setMessages(messagesData)
       }
+      
+      // Mark message notifications as read for this room
+      supabase
+        .from('notifications')
+        .update({ is_read: true })
+        .eq('user_id', user!.id)
+        .eq('type', 'new_message')
+        .eq('related_entity_id', id)
+        .then()
+
     } catch (err) {
-      console.error('Failed to load chat', err)
+      console.error('Failed to load room details', err)
     } finally {
       setIsLoading(false)
     }
@@ -118,6 +128,18 @@ export function ChatRoomPage() {
       
       if (error) {
         throw error
+      }
+      
+      // Notify the other user
+      if (otherUser) {
+        supabase.from('notifications').insert({
+          user_id: otherUser.id,
+          type: 'new_message',
+          title: 'New Message',
+          content: `New message from ${profile?.full_name || 'Someone'}`,
+          related_entity_id: id,
+          related_entity_type: 'chat_room'
+        }).then()
       }
       
       // Realtime subscription will handle adding it to the list
