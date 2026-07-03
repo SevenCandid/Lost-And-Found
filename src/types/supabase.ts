@@ -62,6 +62,7 @@ export interface Database {
           is_active?: boolean
           updated_at?: string
         }
+        Relationships: any[]
       }
       users: {
         Row: {
@@ -114,7 +115,12 @@ export interface Database {
           id_photo_url?: string | null
           last_seen_at?: string | null
           updated_at?: string
+          role?: UserRole
+          verification_status?: VerificationStatus
+          rejection_reason?: string | null
+          is_active?: boolean
         }
+        Relationships: any[]
       }
       items: {
         Row: {
@@ -190,6 +196,7 @@ export interface Database {
           returned_at?: string | null
           updated_at?: string
         }
+        Relationships: any[]
       }
       claims: {
         Row: {
@@ -220,6 +227,72 @@ export interface Database {
           resolved_at?: string | null
           updated_at?: string
         }
+        Relationships: any[]
+      }
+      matches: {
+        Row: {
+          id: string
+          lost_item_id: string
+          found_item_id: string
+          score: number
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          lost_item_id: string
+          found_item_id: string
+          score?: number
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          score?: number
+          status?: string
+        }
+        Relationships: any[]
+      }
+      chat_rooms: {
+        Row: {
+          id: string
+          item_id: string
+          user1_id: string
+          user2_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          user1_id: string
+          user2_id: string
+          created_at?: string
+        }
+        Update: {
+          item_id?: string
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: any[]
+      }
+      messages: {
+        Row: {
+          id: string
+          room_id: string
+          sender_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          room_id: string
+          sender_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          content?: string
+        }
+        Relationships: any[]
       }
       notifications: {
         Row: {
@@ -247,6 +320,7 @@ export interface Database {
         Update: {
           is_read?: boolean
         }
+        Relationships: any[]
       }
       activity_logs: {
         Row: {
@@ -266,6 +340,9 @@ export interface Database {
         Update: never  // Logs are immutable
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    CompositeTypes: Record<string, never>
     Enums: {
       user_role: UserRole
       verification_status: VerificationStatus

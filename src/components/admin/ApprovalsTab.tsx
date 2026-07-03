@@ -83,12 +83,14 @@ export function ApprovalsTab() {
             </div>
             <div className="flex gap-2">
               <button 
+                title="Reject" 
                 onClick={() => handleAction(user.id, 'rejected')}
                 className="w-10 h-10 rounded-full bg-danger-50 text-danger-500 flex items-center justify-center hover:bg-danger-100 active:scale-95 transition-all"
               >
                 <X size={20} />
               </button>
               <button 
+                title="Approve" 
                 onClick={() => handleAction(user.id, 'verified')}
                 className="w-10 h-10 rounded-full bg-success-50 text-success-500 flex items-center justify-center hover:bg-success-100 active:scale-95 transition-all"
               >

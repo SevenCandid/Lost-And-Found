@@ -14,26 +14,16 @@ ALTER TABLE public.items
   ADD COLUMN IF NOT EXISTS meeting_time timestamp with time zone,
   ADD COLUMN IF NOT EXISTS returned_at timestamp with time zone;
 
--- 2. Drop old status constraint and recreate with new values
--- (items table uses text, not an enum, so we manage via check constraint)
-ALTER TABLE public.items
-  DROP CONSTRAINT IF EXISTS items_status_check;
-
-ALTER TABLE public.items
-  ADD CONSTRAINT items_status_check
-    CHECK (status IN (
-      'active',
-      'claimed',
-      'resolved',
-      'archived',
-      'awaiting_pickup',
-      'ready_for_collection',
-      'returned',
-      'closed'
-    ));
+-- 2. Extend the item_status enum with custody-related values
+-- ADD VALUE IF NOT EXISTS is idempotent and safe to re-run
+ALTER TYPE public.item_status ADD VALUE IF NOT EXISTS 'awaiting_pickup';
+ALTER TYPE public.item_status ADD VALUE IF NOT EXISTS 'ready_for_collection';
+ALTER TYPE public.item_status ADD VALUE IF NOT EXISTS 'returned';
+ALTER TYPE public.item_status ADD VALUE IF NOT EXISTS 'closed';
 
 -- 3. Allow reporters to update custody fields on their own items
-CREATE POLICY IF NOT EXISTS "Reporters can update custody fields on their items"
+DROP POLICY IF EXISTS "Reporters can update custody fields on their items" ON public.items;
+CREATE POLICY "Reporters can update custody fields on their items"
   ON public.items FOR UPDATE
   USING (auth.uid() = reporter_id)
   WITH CHECK (auth.uid() = reporter_id);

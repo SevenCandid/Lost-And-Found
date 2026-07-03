@@ -18,7 +18,7 @@ export function ReportPage() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [type, setType] = useState<'lost' | 'found'>('found')
-  const [category, setCategory] = useState(ALL_CATEGORIES[0])
+  const [category, setCategory] = useState<string>(ALL_CATEGORIES[0] as string)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
