@@ -13,7 +13,7 @@ import { MatchSuggestions } from '../components/items/MatchSuggestions'
 import { CustodyBadge } from '../components/items/CustodyBadge'
 
 type Item = Database['public']['Tables']['items']['Row']
-type User = Pick<Database['public']['Tables']['users']['Row'], 'id' | 'full_name' | 'department' | 'avatar_url'>
+type User = Pick<Database['public']['Tables']['users']['Row'], 'id' | 'full_name' | 'department' | 'id_photo_url'>
 
 export function ItemDetailsPage() {
   const navigate = useNavigate()
@@ -51,7 +51,7 @@ export function ItemDetailsPage() {
       // Fetch reporter info
       const { data: reporterData } = await supabase
         .from('users')
-        .select('id, full_name, department, avatar_url')
+        .select('id, full_name, department, id_photo_url')
         .eq('id', itemData.reporter_id)
         .single()
 
@@ -231,8 +231,8 @@ export function ItemDetailsPage() {
         {reporter && (
           <div className="flex items-center gap-3 border border-slate-100 p-3 rounded-2xl bg-white shadow-sm mt-6">
             <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold overflow-hidden shrink-0">
-              {reporter.avatar_url ? (
-                <img src={reporter.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              {reporter.id_photo_url ? (
+                <img src={reporter.id_photo_url} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
                 reporter.full_name.charAt(0)
               )}

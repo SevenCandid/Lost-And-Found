@@ -24,6 +24,7 @@ export type NotificationType =
   | 'item_verified'
   | 'account_verified'
   | 'account_rejected'
+  | 'new_message'
   | 'system'
 
 export interface Database {
@@ -74,7 +75,6 @@ export interface Database {
           department: string
           level: string
           phone: string | null
-          avatar_url: string | null
           id_photo_url: string | null
           role: UserRole
           verification_status: VerificationStatus
@@ -93,7 +93,6 @@ export interface Database {
           department: string
           level: string
           phone?: string | null
-          avatar_url?: string | null
           id_photo_url?: string | null
           role?: UserRole
           verification_status?: VerificationStatus
@@ -111,7 +110,6 @@ export interface Database {
           department?: string
           level?: string
           phone?: string | null
-          avatar_url?: string | null
           id_photo_url?: string | null
           last_seen_at?: string | null
           updated_at?: string

@@ -25,8 +25,8 @@ export function TopHeader() {
             onClick={() => navigate('/profile')}
             className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 overflow-hidden hover:ring-2 hover:ring-primary-500 hover:ring-offset-2 transition-all"
           >
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.full_name || 'Profile'} className="w-full h-full object-cover" />
+            {profile.id_photo_url ? (
+              <img src={profile.id_photo_url} alt={profile.full_name || 'Profile'} className="w-full h-full object-cover" />
             ) : (
               <UserIcon size={16} className="text-slate-500" />
             )}
