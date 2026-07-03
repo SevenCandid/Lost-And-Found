@@ -75,8 +75,8 @@ export function SearchPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface pt-safe pb-24">
-      {/* Sticky Search Header (sticks below TopHeader) */}
-      <div className="sticky top-14 z-40 bg-white/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 space-y-3">
+      {/* Sticky Search Header */}
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 space-y-3">
         {/* Search input row */}
         <div className="flex items-center gap-2">
           <SearchBar

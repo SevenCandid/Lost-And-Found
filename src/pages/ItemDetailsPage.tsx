@@ -10,6 +10,7 @@ import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import type { Database } from '../types/supabase'
 import { MatchSuggestions } from '../components/items/MatchSuggestions'
+import { CustodyBadge } from '../components/items/CustodyBadge'
 
 type Item = Database['public']['Tables']['items']['Row']
 type User = Pick<Database['public']['Tables']['users']['Row'], 'id' | 'full_name' | 'department' | 'avatar_url'>
@@ -120,6 +121,27 @@ export function ItemDetailsPage() {
     toast.success('Verification request sent to the reporter!')
   }
 
+  const handleMarkReturned = async () => {
+    if (!item) return
+    const confirmed = window.confirm('Are you sure you want to mark this item as returned? This action cannot be undone.')
+    if (!confirmed) return
+
+    setIsSubmitting(true)
+    const { error } = await supabase
+      .from('items')
+      .update({ status: 'returned', returned_at: new Date().toISOString() })
+      .eq('id', item.id)
+
+    setIsSubmitting(false)
+    if (error) {
+      toast.error('Failed to update status.')
+      return
+    }
+
+    toast.success('Item marked as returned!')
+    setItem({ ...item, status: 'returned', returned_at: new Date().toISOString() })
+  }
+
   if (isLoading || !item) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center pt-safe">
@@ -173,6 +195,10 @@ export function ItemDetailsPage() {
           <MatchSuggestions itemId={item.id} itemType={item.type} />
         )}
 
+        {item.type === 'found' && (
+          <CustodyBadge item={item} />
+        )}
+
         <div className="space-y-4 text-slate-600 mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 shrink-0">
@@ -221,7 +247,7 @@ export function ItemDetailsPage() {
         )}
       </div>
 
-      {/* Sticky Bottom Action */}
+      {/* Sticky Bottom Action for Non-Reporter */}
       {item.status === 'active' && !isReporter && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-slate-100 pb-safe max-w-md mx-auto z-30 flex gap-3">
           <Button 
@@ -271,6 +297,19 @@ export function ItemDetailsPage() {
           </Button>
           <Button className="flex-1" onClick={handleOpenClaim}>
             {isLost ? 'I found this' : 'Claim this'}
+          </Button>
+        </div>
+      )}
+
+      {/* Sticky Bottom Action for Reporter */}
+      {isReporter && item.type === 'found' && !['returned', 'closed'].includes(item.status) && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-slate-100 pb-safe max-w-md mx-auto z-30">
+          <Button 
+            fullWidth 
+            onClick={handleMarkReturned}
+            isLoading={isSubmitting}
+          >
+            Mark as Returned to Owner
           </Button>
         </div>
       )}

@@ -14,8 +14,9 @@ export type Json =
 export type UserRole = 'student' | 'admin' | 'superadmin'
 export type VerificationStatus = 'pending' | 'verified' | 'rejected'
 export type ItemType = 'lost' | 'found'
-export type ItemStatus = 'active' | 'claimed' | 'resolved' | 'archived'
+export type ItemStatus = 'active' | 'claimed' | 'resolved' | 'archived' | 'awaiting_pickup' | 'ready_for_collection' | 'returned' | 'closed'
 export type ClaimStatus = 'pending' | 'approved' | 'rejected'
+export type HolderType = 'finder' | 'security' | 'student_affairs' | 'other'
 export type NotificationType =
   | 'claim_received'
   | 'claim_approved'
@@ -131,6 +132,14 @@ export interface Database {
           is_verified: boolean
           views: number
           meta: Json
+          // Custody fields
+          holder_type: HolderType | null
+          holder_location: string | null
+          holder_notes: string | null
+          trust_agreement: boolean
+          meeting_location: string | null
+          meeting_time: string | null
+          returned_at: string | null
           created_at: string
           updated_at: string
         }
@@ -149,6 +158,14 @@ export interface Database {
           is_verified?: boolean
           views?: number
           meta?: Json
+          // Custody fields
+          holder_type?: HolderType | null
+          holder_location?: string | null
+          holder_notes?: string | null
+          trust_agreement?: boolean
+          meeting_location?: string | null
+          meeting_time?: string | null
+          returned_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -163,6 +180,14 @@ export interface Database {
           status?: ItemStatus
           is_verified?: boolean
           meta?: Json
+          // Custody fields
+          holder_type?: HolderType | null
+          holder_location?: string | null
+          holder_notes?: string | null
+          trust_agreement?: boolean
+          meeting_location?: string | null
+          meeting_time?: string | null
+          returned_at?: string | null
           updated_at?: string
         }
       }
@@ -247,6 +272,7 @@ export interface Database {
       item_type: ItemType
       item_status: ItemStatus
       claim_status: ClaimStatus
+      holder_type: HolderType
       notification_type: NotificationType
     }
   }

@@ -25,6 +25,7 @@ export enum ItemCategory {
   // Identification & Cards
   STUDENT_IDS = 'Student IDs',
   NATIONAL_IDS = 'National IDs',
+  PASSPORTS = 'Passports',
   DRIVER_LICENSES = 'Driver Licenses',
   ATM_CARDS = 'ATM Cards',
 
@@ -95,6 +96,7 @@ export const CATEGORY_GROUPS = {
   'IDs & Cards': [
     ItemCategory.STUDENT_IDS,
     ItemCategory.NATIONAL_IDS,
+    ItemCategory.PASSPORTS,
     ItemCategory.DRIVER_LICENSES,
     ItemCategory.ATM_CARDS,
   ],
@@ -141,3 +143,59 @@ export const CATEGORY_GROUPS = {
 }
 
 export const ALL_CATEGORIES = Object.values(ItemCategory)
+
+// High-value categories that trigger security recommendation
+export const HIGH_VALUE_CATEGORIES = new Set([
+  ItemCategory.PHONES,
+  ItemCategory.LAPTOPS,
+  ItemCategory.TABLETS,
+  ItemCategory.WALLETS,
+  ItemCategory.STUDENT_IDS,
+  ItemCategory.NATIONAL_IDS,
+  ItemCategory.PASSPORTS,
+  ItemCategory.ATM_CARDS,
+  ItemCategory.JEWELRY,
+])
+
+// Meeting locations for item return coordination (via chat)
+export const MEETING_LOCATIONS = [
+  'Library Entrance',
+  'Engineering Block Entrance',
+  'Administration Block',
+  'SRC Office',
+  'Security Office',
+  'Cafeteria',
+  'Other Public Location',
+]
+
+// Custody holder options
+export const HOLDER_OPTIONS = [
+  {
+    value: 'finder' as const,
+    label: 'I am keeping it safely',
+    description: 'I will keep the item safely until ownership has been verified.',
+    icon: '🙋',
+    color: 'blue',
+  },
+  {
+    value: 'security' as const,
+    label: 'Security Office',
+    description: 'The item has been handed over to campus security.',
+    icon: '🛡️',
+    color: 'amber',
+  },
+  {
+    value: 'student_affairs' as const,
+    label: 'Student Affairs',
+    description: 'The item has been handed to Student Affairs.',
+    icon: '🏛️',
+    color: 'purple',
+  },
+  {
+    value: 'other' as const,
+    label: 'Other Trusted Location',
+    description: 'The item is with another trusted office or authority.',
+    icon: '📍',
+    color: 'slate',
+  },
+]

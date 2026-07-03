@@ -8,6 +8,8 @@ import { PillFilter } from '../components/ui/Badge'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
+import { CustodyPicker } from '../components/items/CustodyPicker'
+import type { HolderType } from '../types/supabase'
 
 export function ReportPage() {
   const navigate = useNavigate()
@@ -26,6 +28,13 @@ export function ReportPage() {
   
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+
+  const [custody, setCustody] = useState({
+    holderType: null as HolderType | null,
+    holderLocation: '',
+    holderNotes: '',
+    trustAgreement: false
+  })
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -50,6 +59,21 @@ export function ReportPage() {
     if (title.length < 3) {
       toast.error('Title must be at least 3 characters.')
       return
+    }
+
+    if (type === 'found') {
+      if (!custody.holderType) {
+        toast.error('Please indicate where the found item is being kept.')
+        return
+      }
+      if (custody.holderType === 'other' && !custody.holderLocation.trim()) {
+        toast.error('Please provide the location name for the "Other" option.')
+        return
+      }
+      if (custody.holderType === 'finder' && !custody.trustAgreement) {
+        toast.error('You must agree to the Code of Trust to keep the item.')
+        return
+      }
     }
 
     setIsLoading(true)
@@ -89,7 +113,13 @@ export function ReportPage() {
           location,
           date_occurred: new Date(dateOccurred).toISOString(),
           image_url: imageUrl,
-          status: 'active' // newly reported items are always active
+          status: 'active', // newly reported items are always active
+          ...(type === 'found' ? {
+            holder_type: custody.holderType,
+            holder_location: custody.holderType === 'other' ? custody.holderLocation : null,
+            holder_notes: custody.holderNotes || null,
+            trust_agreement: custody.trustAgreement,
+          } : {})
         })
 
       if (dbError) throw dbError
@@ -244,6 +274,16 @@ export function ReportPage() {
             />
           </div>
         </div>
+
+        {type === 'found' && (
+          <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-soft">
+            <CustodyPicker 
+              value={custody} 
+              category={category} 
+              onChange={setCustody} 
+            />
+          </div>
+        )}
 
         <div className="pt-2">
           <Button type="submit" fullWidth size="lg" isLoading={isLoading} className="h-14 text-lg">
