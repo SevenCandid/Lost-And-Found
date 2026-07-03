@@ -1,11 +1,50 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Home, PlusCircle, Search, User, LogIn, MessageCircle } from 'lucide-react'
+import { Home, PlusCircle, Search, MessageCircle, User } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useAuth } from '../contexts/AuthContext'
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 
 export function BottomNavigation() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [unreadMessages, setUnreadMessages] = useState(0)
+
+  useEffect(() => {
+    if (!user) return
+
+    const fetchUnread = async () => {
+      const { count } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('is_read', false)
+        .eq('type', 'new_message')
+      
+      setUnreadMessages(count || 0)
+    }
+
+    fetchUnread()
+
+    // Subscribe to new notifications
+    const channel = supabase
+      .channel('unread_messages')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => fetchUnread()
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user])
 
   const handleProfileTap = (e: React.MouseEvent) => {
     if (!user) {
@@ -38,11 +77,18 @@ export function BottomNavigation() {
           >
             {({ isActive }) => (
               <>
-                <item.icon
-                  size={20}
-                  strokeWidth={isActive ? 2.5 : 2}
-                  className={cn(isActive && "drop-shadow-sm")}
-                />
+                <div className="relative">
+                  <item.icon
+                    size={20}
+                    strokeWidth={isActive ? 2.5 : 2}
+                    className={cn(isActive && "drop-shadow-sm")}
+                  />
+                  {item.label === 'Messages' && unreadMessages > 0 && (
+                    <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold px-1.5 min-w-[14px] h-[14px] rounded-full flex items-center justify-center border border-white">
+                      {unreadMessages > 9 ? '9+' : unreadMessages}
+                    </span>
+                  )}
+                </div>
                 <span className={cn(
                   "text-[10px] font-medium",
                   isActive ? "opacity-100" : "opacity-80"

@@ -103,8 +103,8 @@ export function ChatListPage() {
                 className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary-200 transition-colors active:scale-[0.98]"
               >
                 <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden relative">
-                  {room.other_user?.avatar_url ? (
-                    <img src={room.other_user.avatar_url} alt="" className="w-full h-full object-cover" />
+                  {room.other_user?.id_photo_url ? (
+                    <img src={room.other_user.id_photo_url} alt={room.other_user.full_name || 'User'} className="w-full h-full object-cover" />
                   ) : (
                     <span className="font-bold text-slate-500 text-lg">
                       {room.other_user?.full_name?.charAt(0) || '?'}

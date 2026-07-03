@@ -144,8 +144,8 @@ export function ChatRoomPage() {
           
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
-              {otherUser?.avatar_url ? (
-                <img src={otherUser.avatar_url} alt="" className="w-full h-full object-cover" />
+              {otherUser?.id_photo_url ? (
+            <img src={otherUser.id_photo_url} alt={otherUser.full_name} className="w-full h-full object-cover" />
               ) : (
                 <span className="font-bold text-slate-500">{otherUser?.full_name?.charAt(0) || '?'}</span>
               )}

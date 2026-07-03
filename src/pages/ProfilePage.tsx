@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Database } from '../lib/database.types'
+import { Database } from '../types/supabase'
 import { ItemCard } from '../components/ItemCard'
 
 type Item = Database['public']['Tables']['items']['Row']

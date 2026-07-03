@@ -1,74 +1,76 @@
 // Comprehensive category system for university lost and found items
 
-export enum ItemCategory {
+export const ItemCategory = {
   // Electronics
-  PHONES = 'Phones',
-  LAPTOPS = 'Laptops',
-  TABLETS = 'Tablets',
-  CHARGERS = 'Chargers',
-  POWER_BANKS = 'Power Banks',
-  EARBUDS = 'Earbuds',
-  HEADPHONES = 'Headphones',
-  USB_DRIVES = 'USB Drives',
-  HARD_DRIVES = 'Hard Drives',
-  SCIENTIFIC_CALCULATORS = 'Scientific Calculators',
-  GRAPHING_CALCULATORS = 'Graphing Calculators',
+  PHONES: 'Phones',
+  LAPTOPS: 'Laptops',
+  TABLETS: 'Tablets',
+  CHARGERS: 'Chargers',
+  POWER_BANKS: 'Power Banks',
+  EARBUDS: 'Earbuds',
+  HEADPHONES: 'Headphones',
+  USB_DRIVES: 'USB Drives',
+  HARD_DRIVES: 'Hard Drives',
+  SCIENTIFIC_CALCULATORS: 'Scientific Calculators',
+  GRAPHING_CALCULATORS: 'Graphing Calculators',
 
   // Academics
-  BOOKS = 'Books',
-  LECTURE_NOTES = 'Lecture Notes',
-  ASSIGNMENTS = 'Assignments',
-  PROJECT_REPORTS = 'Project Reports',
-  LAB_MANUALS = 'Lab Manuals',
-  DRAWING_BOARDS = 'Drawing Boards',
+  BOOKS: 'Books',
+  LECTURE_NOTES: 'Lecture Notes',
+  ASSIGNMENTS: 'Assignments',
+  PROJECT_REPORTS: 'Project Reports',
+  LAB_MANUALS: 'Lab Manuals',
+  DRAWING_BOARDS: 'Drawing Boards',
 
   // Identification & Cards
-  STUDENT_IDS = 'Student IDs',
-  NATIONAL_IDS = 'National IDs',
-  PASSPORTS = 'Passports',
-  DRIVER_LICENSES = 'Driver Licenses',
-  ATM_CARDS = 'ATM Cards',
+  STUDENT_IDS: 'Student IDs',
+  NATIONAL_IDS: 'National IDs',
+  PASSPORTS: 'Passports',
+  DRIVER_LICENSES: 'Driver Licenses',
+  ATM_CARDS: 'ATM Cards',
 
   // Bags & Wallets
-  WALLETS = 'Wallets',
-  PURSES = 'Purses',
-  BACKPACKS = 'Backpacks',
-  LAPTOP_BAGS = 'Laptop Bags',
-  HANDBAGS = 'Handbags',
-  TRAVEL_BAGS = 'Travel Bags',
+  WALLETS: 'Wallets',
+  PURSES: 'Purses',
+  BACKPACKS: 'Backpacks',
+  LAPTOP_BAGS: 'Laptop Bags',
+  HANDBAGS: 'Handbags',
+  TRAVEL_BAGS: 'Travel Bags',
 
   // Keys & Security
-  KEYS = 'Keys',
-  ROOM_KEYS = 'Room Keys',
-  CAR_KEYS = 'Car Keys',
-  PADLOCKS = 'Padlocks',
+  KEYS: 'Keys',
+  ROOM_KEYS: 'Room Keys',
+  CAR_KEYS: 'Car Keys',
+  PADLOCKS: 'Padlocks',
 
   // Personal & Clothing
-  UMBRELLAS = 'Umbrellas',
-  WATER_BOTTLES = 'Water Bottles',
-  JACKETS = 'Jackets',
-  HOODIES = 'Hoodies',
-  LAB_COATS = 'Lab Coats',
-  SHOES = 'Shoes',
-  SLIPPERS = 'Slippers',
-  CAPS = 'Caps',
-  WATCHES = 'Watches',
-  JEWELRY = 'Jewelry',
+  UMBRELLAS: 'Umbrellas',
+  WATER_BOTTLES: 'Water Bottles',
+  JACKETS: 'Jackets',
+  HOODIES: 'Hoodies',
+  LAB_COATS: 'Lab Coats',
+  SHOES: 'Shoes',
+  SLIPPERS: 'Slippers',
+  CAPS: 'Caps',
+  WATCHES: 'Watches',
+  JEWELRY: 'Jewelry',
 
   // Hostel & Living
-  COOKING_POTS = 'Cooking Pots',
-  ELECTRIC_KETTLES = 'Electric Kettles',
-  EXTENSION_BOARDS = 'Extension Boards',
-  REMOTE_CONTROLS = 'Remote Controls',
+  COOKING_POTS: 'Cooking Pots',
+  ELECTRIC_KETTLES: 'Electric Kettles',
+  EXTENSION_BOARDS: 'Extension Boards',
+  REMOTE_CONTROLS: 'Remote Controls',
 
   // Sports
-  SPORTS_EQUIPMENT = 'Sports Equipment',
-  FOOTBALL_BOOTS = 'Football Boots',
-  JERSEYS = 'Jerseys',
+  SPORTS_EQUIPMENT: 'Sports Equipment',
+  FOOTBALL_BOOTS: 'Football Boots',
+  JERSEYS: 'Jerseys',
 
   // Miscellaneous
-  MISCELLANEOUS = 'Miscellaneous',
-}
+  MISCELLANEOUS: 'Miscellaneous',
+} as const;
+
+export type ItemCategory = typeof ItemCategory[keyof typeof ItemCategory];
 
 // Database-ready structures grouped by high-level category
 export const CATEGORY_GROUPS = {
