@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { CATEGORY_GROUPS } from '../lib/categories'
+import { CATEGORY_GROUPS, ALL_CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
 import { Camera, MapPin, AlignLeft, Calendar } from 'lucide-react'
 import { Button } from '../components/ui/Button'
@@ -16,7 +16,7 @@ export function ReportPage() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [type, setType] = useState<'lost' | 'found'>('found')
-  const [category, setCategory] = useState('Electronics')
+  const [category, setCategory] = useState(ALL_CATEGORIES[0])
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')

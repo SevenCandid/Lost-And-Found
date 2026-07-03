@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { CATEGORY_GROUPS } from '../lib/categories'
 import { PoweredBy } from '../components/ui/PoweredBy'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Search, Plus } from 'lucide-react'
+import { Bell, Plus } from 'lucide-react'
 import { PillFilter } from '../components/ui/Badge'
-import { SkeletonCard } from '../components/ui/Skeleton'
 import { ItemCard } from '../components/ItemCard'
 import { supabase } from '../lib/supabase'
 import type { Database } from '../types/supabase'
@@ -135,30 +134,44 @@ export function HomePage() {
       </div>
 
       {/* Feed */}
-      <div className="flex-1 px-5 pt-2 pb-6 space-y-4">
-        <h2 className="text-lg font-bold text-slate-800 tracking-tight mb-2">Latest Updates</h2>
-        
+      <div className="flex-1 px-4 pt-2 pb-6">
+        <h2 className="text-base font-bold text-slate-800 tracking-tight mb-3 px-1">
+          {categoryFilter === 'All' ? 'Latest Items' : categoryFilter}
+          {!isLoading && items.length > 0 && (
+            <span className="ml-2 text-xs font-normal text-slate-400">{items.length} results</span>
+          )}
+        </h2>
+
         {isLoading ? (
-          <>
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </>
+          <div className="grid grid-cols-2 gap-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm animate-pulse">
+                <div className="aspect-square bg-slate-100" />
+                <div className="p-2.5 space-y-2">
+                  <div className="h-3 bg-slate-100 rounded-full w-3/4" />
+                  <div className="h-2.5 bg-slate-100 rounded-full w-1/2" />
+                  <div className="h-2.5 bg-slate-100 rounded-full w-2/3" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : items.length > 0 ? (
-          items.map(item => (
-            <ItemCard 
-              key={item.id} 
-              item={item} 
-              onClick={() => navigate(`/item/${item.id}`)} 
-            />
-          ))
+          <div className="grid grid-cols-2 gap-3">
+            {items.map(item => (
+              <ItemCard
+                key={item.id}
+                item={item}
+                onClick={() => navigate(`/item/${item.id}`)}
+              />
+            ))}
+          </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-              <Search size={28} className="text-slate-300" />
+          <div className="flex flex-col items-center justify-center py-16 text-slate-500 text-center">
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-4xl">
+              🔍
             </div>
             <p className="font-semibold text-slate-700">No items found</p>
-            <p className="text-sm mt-1">Be the first to report something!</p>
+            <p className="text-sm mt-1 text-slate-400">Be the first to report something!</p>
           </div>
         )}
       </div>
