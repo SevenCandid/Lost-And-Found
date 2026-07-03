@@ -12,14 +12,22 @@ export function ProtectedRoute({ children, requireVerified = false, requireAdmin
   const { user, isLoading, isVerified, isAdmin, profile } = useAuth()
   const location = useLocation()
 
-  // Show nothing while we check auth state
-  if (isLoading) return null
+  // Show spinner while we check auth state
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   // Not logged in → go to login
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />
 
-  // Logged in but profile still loading → wait
-  if (!profile) return null
+  // Logged in but profile still loading → show spinner briefly
+  if (!profile) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   // Admin required but user is not admin
   if (requireAdmin && !isAdmin) {
