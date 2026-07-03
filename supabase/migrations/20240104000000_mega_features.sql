@@ -10,7 +10,7 @@ drop table if exists public.notifications cascade;
 -- 1. NOTIFICATIONS TABLE
 create table public.notifications (
   id uuid default uuid_generate_v4() primary key,
-  user_id uuid references public.profiles(id) on delete cascade not null,
+  user_id uuid references public.users(id) on delete cascade not null,
   type text not null, -- 'match_found', 'claim_update', 'new_message', etc.
   title text not null,
   message text not null,
@@ -31,8 +31,8 @@ create policy "Users can update their own notifications"
 create table public.chat_rooms (
   id uuid default uuid_generate_v4() primary key,
   item_id uuid references public.items(id) on delete cascade not null,
-  user1_id uuid references public.profiles(id) on delete cascade not null,
-  user2_id uuid references public.profiles(id) on delete cascade not null,
+  user1_id uuid references public.users(id) on delete cascade not null,
+  user2_id uuid references public.users(id) on delete cascade not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   unique (item_id, user1_id, user2_id)
 );
@@ -40,7 +40,7 @@ create table public.chat_rooms (
 create table public.messages (
   id uuid default uuid_generate_v4() primary key,
   room_id uuid references public.chat_rooms(id) on delete cascade not null,
-  sender_id uuid references public.profiles(id) on delete cascade not null,
+  sender_id uuid references public.users(id) on delete cascade not null,
   content text not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
