@@ -74,6 +74,19 @@ export function RegisterPage() {
     setIsLoading(true)
 
     try {
+      // 0. Pre-flight: check if index number already exists (avoids orphaned auth users)
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('index_number', form.indexNumber.toUpperCase())
+        .maybeSingle()
+
+      if (existingUser) {
+        toast.error('This index number is already registered. Contact support if this is your number.')
+        setIsLoading(false)
+        return
+      }
+
       // 1. Create auth user — pass profile data as metadata for the DB trigger
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: form.email,
@@ -117,12 +130,28 @@ export function RegisterPage() {
       toast.success('Identity submitted! Awaiting admin verification.')
       navigate('/pending', { state: { from } })
     } catch (err: any) {
-      if (err.message?.includes('User already registered')) {
+      const msg: string = err?.message ?? ''
+      const code: string = err?.code ?? ''
+      const status: number = err?.status ?? 0
+
+      if (msg.includes('User already registered') || msg.includes('already been registered')) {
         toast.error('An account with this email already exists. Try logging in.')
-      } else if (err.message?.includes('duplicate key') && err.message?.includes('index_number')) {
-        toast.error('This index number is already registered.')
+      } else if (
+        // PostgREST 409 Conflict from the handle_new_user() trigger
+        status === 409 ||
+        code === '23505' ||
+        msg.includes('duplicate key') ||
+        msg.includes('unique constraint')
+      ) {
+        if (msg.toLowerCase().includes('index_number')) {
+          toast.error('This index number is already registered. Contact support if this is your number.')
+        } else if (msg.toLowerCase().includes('email')) {
+          toast.error('An account with this email already exists. Try logging in.')
+        } else {
+          toast.error('An account with these details already exists.')
+        }
       } else {
-        toast.error(err.message || 'Something went wrong. Please try again.')
+        toast.error(msg || 'Something went wrong. Please try again.')
       }
     } finally {
       setIsLoading(false)
