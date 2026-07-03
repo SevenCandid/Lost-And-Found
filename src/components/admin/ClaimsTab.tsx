@@ -1,0 +1,141 @@
+import { useState, useEffect } from 'react'
+import { FileText, CheckCircle, XCircle } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
+import toast from 'react-hot-toast'
+import { Database } from '../../lib/database.types'
+import { EmptyState } from '../ui/EmptyState'
+import { formatDistanceToNow } from 'date-fns'
+
+type Claim = Database['public']['Tables']['claims']['Row'] & {
+  item: Database['public']['Tables']['items']['Row']
+  claimer: Database['public']['Tables']['users']['Row']
+}
+
+export function ClaimsTab() {
+  const [claims, setClaims] = useState<Claim[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchClaims()
+  }, [])
+
+  const fetchClaims = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('claims')
+        .select(`
+          *,
+          item:items(*),
+          claimer:users!claims_claimer_id_fkey(*)
+        `)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+      
+      if (error) throw error
+      setClaims(data as unknown as Claim[] || [])
+    } catch (err: any) {
+      toast.error('Failed to load claims')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleClaim = async (claimId: string, itemId: string, action: 'approved' | 'rejected') => {
+    const confirm = window.confirm(`Are you sure you want to ${action} this claim?`)
+    if (!confirm) return
+
+    try {
+      // Update claim status
+      const { error: claimError } = await supabase
+        .from('claims')
+        .update({ status: action })
+        .eq('id', claimId)
+
+      if (claimError) throw claimError
+
+      if (action === 'approved') {
+        // Mark item as claimed
+        const { error: itemError } = await supabase
+          .from('items')
+          .update({ status: 'claimed' })
+          .eq('id', itemId)
+        
+        if (itemError) throw itemError
+
+        // Also reject any other pending claims for this item
+        await supabase
+          .from('claims')
+          .update({ status: 'rejected' })
+          .eq('item_id', itemId)
+          .eq('status', 'pending')
+          .neq('id', claimId)
+      }
+
+      toast.success(`Claim ${action}`)
+      setClaims(prev => prev.filter(c => c.id !== claimId))
+    } catch (err: any) {
+      toast.error(`Failed to ${action} claim`)
+    }
+  }
+
+  if (isLoading) {
+    return <div className="text-center py-10 text-slate-500">Loading claims...</div>
+  }
+
+  if (claims.length === 0) {
+    return <EmptyState title="No pending claims" description="All claims have been resolved." />
+  }
+
+  return (
+    <div className="space-y-4">
+      {claims.map(claim => (
+        <div key={claim.id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center shrink-0">
+                <FileText size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 line-clamp-1">{claim.item.title}</h3>
+                <p className="text-sm text-slate-500">Claimed by {claim.claimer.full_name}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{formatDistanceToNow(new Date(claim.created_at))} ago</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => handleClaim(claim.id, claim.item_id, 'rejected')}
+                className="w-10 h-10 rounded-full bg-danger-50 text-danger-500 flex items-center justify-center hover:bg-danger-100 active:scale-95 transition-all"
+                title="Reject Claim"
+              >
+                <XCircle size={20} />
+              </button>
+              <button 
+                onClick={() => handleClaim(claim.id, claim.item_id, 'approved')}
+                className="w-10 h-10 rounded-full bg-success-50 text-success-500 flex items-center justify-center hover:bg-success-100 active:scale-95 transition-all"
+                title="Approve Claim"
+              >
+                <CheckCircle size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 p-4 rounded-2xl">
+            <span className="block text-xs text-slate-500 font-semibold mb-1 uppercase tracking-wider">Proof of Ownership</span>
+            <p className="text-sm text-slate-700 whitespace-pre-wrap">{claim.proof_description}</p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3 text-sm">
+             <div className="bg-slate-50 p-3 rounded-2xl">
+               <span className="block text-xs text-slate-400 font-medium mb-0.5">Claimer Index</span>
+               <span className="font-semibold text-slate-700">{claim.claimer.index_number}</span>
+             </div>
+             <div className="bg-slate-50 p-3 rounded-2xl">
+               <span className="block text-xs text-slate-400 font-medium mb-0.5">Claimer Email</span>
+               <span className="font-semibold text-slate-700 truncate block">{claim.claimer.email}</span>
+             </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
