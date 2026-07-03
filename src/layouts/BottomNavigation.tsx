@@ -26,9 +26,11 @@ export function BottomNavigation() {
 
     fetchUnread()
 
-    // Subscribe to new notifications
-    const channel = supabase
-      .channel('unread_messages')
+    // Use unique channel name per user to avoid StrictMode conflicts
+    const channelName = `unread_messages_${user.id}_${Date.now()}`
+    const channel = supabase.channel(channelName)
+
+    channel
       .on(
         'postgres_changes',
         {
@@ -44,7 +46,7 @@ export function BottomNavigation() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [user])
+  }, [user?.id])
 
   const handleProfileTap = (e: React.MouseEvent) => {
     if (!user) {
