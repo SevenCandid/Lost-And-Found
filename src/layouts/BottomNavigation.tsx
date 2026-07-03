@@ -26,8 +26,8 @@ export function BottomNavigation() {
 
     fetchUnread()
 
-    // Use unique channel name per user to avoid StrictMode conflicts
-    const channelName = `unread_messages_${user.id}_${Date.now()}`
+    // Use a completely unique channel name to avoid StrictMode conflicts
+    const channelName = `unread_messages_${user.id}_${Math.random().toString(36).substring(7)}`
     const channel = supabase.channel(channelName)
 
     channel

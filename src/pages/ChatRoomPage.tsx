@@ -31,7 +31,7 @@ export function ChatRoomPage() {
 
     // Subscribe to new messages
     const subscription = supabase
-      .channel(`room:${id}`)
+      .channel(`room:${id}_${Math.random().toString(36).substring(7)}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 

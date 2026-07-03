@@ -22,7 +22,7 @@ export function NotificationsPage() {
 
     // Subscribe to new notifications
     const subscription = supabase
-      .channel('public:notifications')
+      .channel(`public:notifications_${Math.random().toString(36).substring(7)}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 

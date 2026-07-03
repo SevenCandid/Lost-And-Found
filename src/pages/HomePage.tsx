@@ -67,7 +67,7 @@ export function HomePage() {
     fetchUnreadCount()
 
     const subscription = supabase
-      .channel('public:notifications:homepage')
+      .channel(`public:notifications:homepage_${Math.random().toString(36).substring(7)}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 
