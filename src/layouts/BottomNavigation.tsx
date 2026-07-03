@@ -19,7 +19,6 @@ export function BottomNavigation() {
     { to: '/search', icon: Search, label: 'Search' },
     { to: '/report', icon: PlusCircle, label: 'Report' },
     { to: '/messages', icon: MessageCircle, label: 'Messages' },
-    { to: user ? '/profile' : '/login', icon: user ? User : LogIn, label: user ? 'Profile' : 'Log In' },
   ]
 
   return (

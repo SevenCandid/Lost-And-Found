@@ -139,11 +139,12 @@ export function ItemDetailsPage() {
       <header className="fixed top-0 left-0 right-0 z-40 flex justify-between p-4 pt-safe max-w-md mx-auto pointer-events-none">
         <button 
           onClick={() => navigate(-1)}
+          title="Go back"
           className="w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 pointer-events-auto active:scale-95 transition-transform"
         >
           <ChevronLeft size={24} />
         </button>
-        <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 pointer-events-auto active:scale-95 transition-transform">
+        <button title="Share" className="w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 pointer-events-auto active:scale-95 transition-transform">
           <Share2 size={20} />
         </button>
       </header>

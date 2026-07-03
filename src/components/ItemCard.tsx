@@ -71,12 +71,15 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
       </div>
 
       {/* Info */}
-      <div className="p-2.5">
-        <p className="font-semibold text-slate-800 text-sm leading-tight truncate mb-1">
-          {item.title}
-        </p>
+      <div className="p-2.5 flex flex-col justify-between flex-1">
+        <div className="mb-2">
+          <h3 className="font-bold text-slate-800 text-[11px] leading-[1.3] break-words">
+            {item.title}
+          </h3>
+        </div>
 
-        <div className="flex items-center gap-1 text-slate-400 mb-1.5">
+        <div className="mt-auto">
+          <div className="flex items-center gap-1 text-slate-400 mb-1.5">
           <MapPin size={10} className="shrink-0" />
           <span className="text-[10px] truncate">{item.location}</span>
         </div>
@@ -89,6 +92,7 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
             <Clock size={9} />
             <span className="text-[9px]">{timeAgo}</span>
           </div>
+        </div>
         </div>
       </div>
     </div>

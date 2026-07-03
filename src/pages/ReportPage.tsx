@@ -105,7 +105,7 @@ export function ReportPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface">
-      <header className="sticky top-0 z-40 bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center pt-safe">
+      <header className="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center">
         <h1 className="text-xl font-bold text-slate-800 tracking-tight">Report Item</h1>
       </header>
 
@@ -117,6 +117,7 @@ export function ReportPage() {
           accept="image/jpeg,image/png,image/webp,image/heic"
           className="hidden"
           onChange={handlePhotoSelect}
+          title="Upload Photo"
         />
         <div 
           onClick={() => fileInputRef.current?.click()}
@@ -183,6 +184,7 @@ export function ReportPage() {
             <label className="text-sm font-semibold text-slate-700 block mb-1.5">Category</label>
             <div className="relative">
               <select
+                title="Select category"
                 value={category}
                 onChange={e => setCategory(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-100 text-slate-800 rounded-2xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"

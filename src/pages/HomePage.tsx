@@ -87,9 +87,8 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface relative pb-20">
-      {/* Header (Greeting & Actions) */}
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-100 pt-safe">
-        <div className="px-5 pt-4 pb-3 flex items-center justify-between">
+      {/* Greeting */}
+      <header className="bg-white px-5 pt-4 pb-3 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-slate-500">Welcome back,</p>
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
@@ -105,32 +104,40 @@ export function HomePage() {
               <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-white"></span>
             )}
           </button>
-        </div>
-
       </header>
 
-      {/* Tabs */}
-      <div className="px-5 py-4 flex gap-2 overflow-x-auto no-scrollbar">
-        <PillFilter active={filter === 'all'} onClick={() => setFilter('all')}>All Items</PillFilter>
-        <PillFilter active={filter === 'lost'} onClick={() => setFilter('lost')}>Lost Items</PillFilter>
-        <PillFilter active={filter === 'found'} onClick={() => setFilter('found')}>Found Items</PillFilter>
-      </div>
+      {/* Filter Bar: type pills + category dropdown on one line */}
+      <div className="px-4 py-3 flex items-center gap-1.5 w-full">
+        <div className="flex gap-1.5 flex-1 min-w-0">
+          <PillFilter active={filter === 'all'} onClick={() => setFilter('all')}>All</PillFilter>
+          <PillFilter active={filter === 'lost'} onClick={() => setFilter('lost')}>Lost</PillFilter>
+          <PillFilter active={filter === 'found'} onClick={() => setFilter('found')}>Found</PillFilter>
+        </div>
 
-      {/* Horizontal Categories (Optional visual scroll) */}
-      <div className="px-5 pb-2 flex gap-3 overflow-x-auto no-scrollbar">
-        {['All', ...Object.keys(CATEGORY_GROUPS)].map(cat => (
-          <div 
-            key={cat} 
-            onClick={() => setCategoryFilter(cat)}
-            className={`whitespace-nowrap px-3 py-1.5 border rounded-[10px] text-xs font-medium shadow-sm active:scale-95 transition-transform cursor-pointer ${
-              categoryFilter === cat 
-                ? 'bg-primary-600 text-white border-primary-600' 
-                : 'bg-white text-slate-600 border-slate-100 hover:border-primary-200'
+        <div className="relative shrink-0">
+          <select
+            title="Filter by category"
+            value={categoryFilter}
+            onChange={e => setCategoryFilter(e.target.value)}
+            className={`appearance-none w-[85px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
+              categoryFilter !== 'All'
+                ? 'bg-primary-600 text-white border-primary-600'
+                : 'bg-white text-slate-600 border-slate-200'
             }`}
           >
-            {cat}
+            <option value="All">Category</option>
+            {Object.keys(CATEGORY_GROUPS).map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+          <div className={`pointer-events-none absolute inset-y-0 right-2 flex items-center ${
+            categoryFilter !== 'All' ? 'text-white' : 'text-slate-400'
+          }`}>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Feed */}

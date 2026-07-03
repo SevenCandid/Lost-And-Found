@@ -22,7 +22,7 @@ export function SearchPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [typeFilter, setTypeFilter] = useState<'all' | 'lost' | 'found'>('all')
   const [dateFilter, setDateFilter] = useState<'any' | 'today' | 'week' | 'month'>('any')
-  const [showFilters, setShowFilters] = useState(false)
+
   
   const [results, setResults] = useState<Item[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -75,8 +75,8 @@ export function SearchPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface pt-safe pb-24">
-      {/* Sticky Search Header */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 space-y-3">
+      {/* Sticky Search Header (sticks below TopHeader) */}
+      <div className="sticky top-14 z-40 bg-white/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 space-y-3">
         {/* Search input row */}
         <div className="flex items-center gap-2">
           <SearchBar
@@ -85,99 +85,81 @@ export function SearchPage() {
             placeholder="Search items, locations..."
             autoFocus
           />
-          <button
-            onClick={() => setShowFilters(f => !f)}
-            className={`shrink-0 p-2.5 rounded-xl border transition-all ${
-              showFilters || selectedCategory !== 'All' || dateFilter !== 'any' || typeFilter !== 'all'
-                ? 'bg-primary-600 text-white border-primary-600'
-                : 'bg-white text-slate-500 border-slate-200'
-            }`}
-          >
-            <SlidersHorizontal size={18} />
-          </button>
         </div>
 
-        {/* Type pills always visible */}
-        <div className="flex gap-2">
-          {(['all', 'lost', 'found'] as const).map(t => (
-            <button
-              key={t}
-              onClick={() => setTypeFilter(t)}
-              className={`flex-1 py-1.5 rounded-full text-xs font-semibold transition-all border ${
-                typeFilter === t
-                  ? t === 'lost' ? 'bg-red-500 text-white border-red-500'
-                    : t === 'found' ? 'bg-emerald-500 text-white border-emerald-500'
-                    : 'bg-slate-800 text-white border-slate-800'
-                  : 'bg-white text-slate-500 border-slate-200'
+        {/* Filter bar: type pills + category + date dropdowns on one row */}
+        <div className="flex items-center gap-1.5 w-full">
+          {/* Type pills */}
+          <div className="flex gap-1.5 flex-1 min-w-0">
+            {(['all', 'lost', 'found'] as const).map(t => (
+              <button
+                key={t}
+                onClick={() => setTypeFilter(t)}
+                className={`flex-1 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+                  typeFilter === t
+                    ? t === 'lost' ? 'bg-red-500 text-white border-red-500'
+                      : t === 'found' ? 'bg-emerald-500 text-white border-emerald-500'
+                      : 'bg-slate-800 text-white border-slate-800'
+                    : 'bg-white text-slate-500 border-slate-200'
+                }`}
+              >
+                {t === 'all' ? 'All' : t === 'lost' ? '🔴 Lost' : '🟢 Found'}
+              </button>
+            ))}
+          </div>
+
+          {/* Category dropdown */}
+          <div className="relative shrink-0">
+            <select
+              title="Filter by category"
+              value={selectedCategory}
+              onChange={e => setSelectedCategory(e.target.value)}
+              className={`appearance-none w-[85px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
+                selectedCategory !== 'All'
+                  ? 'bg-primary-600 text-white border-primary-600'
+                  : 'bg-white text-slate-600 border-slate-200'
               }`}
             >
-              {t === 'all' ? 'All' : t === 'lost' ? '🔴 Lost' : '🟢 Found'}
-            </button>
-          ))}
-        </div>
-
-        {/* Expandable filters panel */}
-        {showFilters && (
-          <div className="space-y-3 pt-1">
-            {/* Categories */}
-            <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Category</p>
-              <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                {['All', ...Object.keys(CATEGORY_GROUPS)].map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
-                      selectedCategory === cat
-                        ? 'bg-primary-600 text-white border-primary-600'
-                        : 'bg-white text-slate-500 border-slate-200'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+              <option value="All">Category</option>
+              {Object.keys(CATEGORY_GROUPS).map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            <div className={`pointer-events-none absolute inset-y-0 right-1.5 flex items-center ${
+              selectedCategory !== 'All' ? 'text-white' : 'text-slate-400'
+            }`}>
+              <svg width="9" height="5" viewBox="0 0 10 6" fill="none">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
-
-            {/* Date */}
-            <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Date</p>
-              <div className="flex gap-2">
-                {(['any', 'today', 'week', 'month'] as const).map(d => (
-                  <button
-                    key={d}
-                    onClick={() => setDateFilter(d)}
-                    className={`flex-1 py-1 rounded-full text-xs font-semibold border transition-all ${
-                      dateFilter === d
-                        ? 'bg-primary-600 text-white border-primary-600'
-                        : 'bg-white text-slate-500 border-slate-200'
-                    }`}
-                  >
-                    {d === 'any' ? 'Any' : d === 'today' ? 'Today' : d === 'week' ? 'Week' : 'Month'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Active filter chips */}
-            {(selectedCategory !== 'All' || dateFilter !== 'any') && (
-              <div className="flex items-center gap-2 flex-wrap">
-                {selectedCategory !== 'All' && (
-                  <div className="flex items-center gap-1 bg-primary-50 text-primary-700 px-2.5 py-1 rounded-full text-xs font-semibold">
-                    {selectedCategory}
-                    <button onClick={() => setSelectedCategory('All')}><X size={11} /></button>
-                  </div>
-                )}
-                {dateFilter !== 'any' && (
-                  <div className="flex items-center gap-1 bg-primary-50 text-primary-700 px-2.5 py-1 rounded-full text-xs font-semibold">
-                    {dateFilter === 'today' ? 'Today' : dateFilter === 'week' ? 'Past Week' : 'Past Month'}
-                    <button onClick={() => setDateFilter('any')}><X size={11} /></button>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
-        )}
+
+          {/* Date dropdown */}
+          <div className="relative shrink-0">
+            <select
+              title="Filter by date"
+              value={dateFilter}
+              onChange={e => setDateFilter(e.target.value as typeof dateFilter)}
+              className={`appearance-none w-[65px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
+                dateFilter !== 'any'
+                  ? 'bg-primary-600 text-white border-primary-600'
+                  : 'bg-white text-slate-600 border-slate-200'
+              }`}
+            >
+              <option value="any">Date</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+            <div className={`pointer-events-none absolute inset-y-0 right-1.5 flex items-center ${
+              dateFilter !== 'any' ? 'text-white' : 'text-slate-400'
+            }`}>
+              <svg width="9" height="5" viewBox="0 0 10 6" fill="none">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Results */}

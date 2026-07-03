@@ -100,6 +100,7 @@ export function AdminAuthPage() {
         <button
           onClick={() => navigate('/')}
           className="p-2 -ml-2 mr-2 text-slate-400 hover:text-slate-600 rounded-full"
+          title="Go back"
         >
           <ChevronLeft size={24} />
         </button>

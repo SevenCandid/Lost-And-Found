@@ -85,7 +85,7 @@ export function ChatListPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface pb-24">
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-100 pt-safe px-5 py-4">
+      <header className="bg-white border-b border-slate-100 px-5 py-4">
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Messages</h1>
       </header>
 

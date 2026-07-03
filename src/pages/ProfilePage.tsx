@@ -25,11 +25,12 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface">
-      <header className="sticky top-0 z-40 bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center pt-safe">
+      <header className="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center">
         <h1 className="text-xl font-bold text-slate-800 tracking-tight">Profile</h1>
         <button
           onClick={() => navigate('/settings')}
           className="p-2 -mr-2 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-full"
+          title="Settings"
         >
           <Settings size={20} />
         </button>

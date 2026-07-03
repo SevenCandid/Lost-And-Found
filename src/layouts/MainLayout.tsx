@@ -1,11 +1,15 @@
 import { Outlet } from 'react-router-dom'
 import { BottomNavigation } from './BottomNavigation'
+import { TopHeader } from '../components/TopHeader'
 
 export function MainLayout() {
   return (
-    <div className="min-h-screen bg-background font-sans text-slate-900 pb-24 md:pb-0">
-      <main className="max-w-md mx-auto min-h-screen bg-white shadow-xl shadow-slate-200/50 sm:border-x border-slate-100 relative">
-        <Outlet />
+    <div className="min-h-screen bg-background font-sans text-slate-900 pb-24 md:pb-0 flex justify-center">
+      <main className="w-full max-w-md min-h-screen bg-white shadow-xl shadow-slate-200/50 sm:border-x border-slate-100 relative flex flex-col">
+        <TopHeader />
+        <div className="flex-1 overflow-x-hidden">
+          <Outlet />
+        </div>
       </main>
       
       {/* Show bottom nav only on mobile/small screens for this app, but since it's mobile-first, we'll keep it max-w-md */}

@@ -135,6 +135,7 @@ export function RegisterPage() {
         <button
           onClick={() => step > 1 ? setStep(step - 1) : navigate('/')}
           className="p-2 -ml-2 mr-2 text-slate-400 hover:text-slate-600 rounded-full"
+          title="Go back"
         >
           <ChevronLeft size={24} />
         </button>
@@ -278,6 +279,7 @@ export function RegisterPage() {
               accept="image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={handlePhotoSelect}
+              title="Upload Student ID"
             />
             <div
               onClick={() => fileInputRef.current?.click()}

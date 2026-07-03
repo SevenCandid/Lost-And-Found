@@ -99,9 +99,9 @@ export function NotificationsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface">
-      <header className="sticky top-0 z-40 bg-white px-4 py-3 border-b border-slate-100 flex items-center justify-between pt-safe">
+      <header className="bg-white px-4 py-3 border-b border-slate-100 flex items-center justify-between">
         <div className="flex items-center">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 mr-2 text-slate-400 hover:text-slate-600 rounded-full">
+          <button onClick={() => navigate(-1)} className="p-2 -ml-2 mr-2 text-slate-400 hover:text-slate-600 rounded-full" title="Go back">
             <ChevronLeft size={24} />
           </button>
           <h1 className="text-xl font-bold text-slate-800 tracking-tight">Notifications</h1>

@@ -138,7 +138,7 @@ export function ChatRoomPage() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-100 pt-safe shrink-0">
         <div className="px-2 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full">
+          <button onClick={() => navigate(-1)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full" title="Go back">
             <ChevronLeft size={24} />
           </button>
           
@@ -208,6 +208,7 @@ export function ChatRoomPage() {
           />
           <button 
             type="submit"
+            title="Send message"
             disabled={!newMessage.trim()}
             className="w-11 h-11 bg-primary-600 text-white rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-700 transition-colors"
           >
