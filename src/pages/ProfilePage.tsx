@@ -5,10 +5,52 @@ import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
+import { Database } from '../lib/database.types'
+import { ItemCard } from '../components/ItemCard'
+
+type Item = Database['public']['Tables']['items']['Row']
+type Claim = Database['public']['Tables']['claims']['Row'] & { item: Item }
 
 export function ProfilePage() {
   const navigate = useNavigate()
   const { profile, isAdmin, signOut } = useAuth()
+  const [activeTab, setActiveTab] = useState<'reports' | 'claims'>('reports')
+  const [reports, setReports] = useState<Item[]>([])
+  const [claims, setClaims] = useState<Claim[]>([])
+  const [isLoadingData, setIsLoadingData] = useState(true)
+
+  useEffect(() => {
+    if (profile) fetchData()
+  }, [profile])
+
+  const fetchData = async () => {
+    setIsLoadingData(true)
+    try {
+      // Fetch Reports
+      const { data: reportsData } = await supabase
+        .from('items')
+        .select('*')
+        .eq('reporter_id', profile!.id)
+        .order('created_at', { ascending: false })
+
+      if (reportsData) setReports(reportsData)
+
+      // Fetch Claims
+      const { data: claimsData } = await supabase
+        .from('claims')
+        .select('*, item:items(*)')
+        .eq('claimer_id', profile!.id)
+        .order('created_at', { ascending: false })
+
+      if (claimsData) setClaims(claimsData as unknown as Claim[])
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsLoadingData(false)
+    }
+  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -76,18 +118,70 @@ export function ProfilePage() {
 
         {/* Tabs */}
         <div className="flex bg-slate-100 p-1 rounded-full">
-          <button className="flex-1 py-2 rounded-full text-sm font-semibold bg-white text-slate-800 shadow-sm">
-            My Reports
+          <button 
+            onClick={() => setActiveTab('reports')}
+            className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
+              activeTab === 'reports' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            My Reports ({reports.length})
           </button>
-          <button className="flex-1 py-2 rounded-full text-sm font-semibold text-slate-500">
-            My Claims
+          <button 
+            onClick={() => setActiveTab('claims')}
+            className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
+              activeTab === 'claims' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            My Claims ({claims.length})
           </button>
         </div>
 
-        <EmptyState
-          title="No items reported yet"
-          description="When you report a lost or found item, it will appear here."
-        />
+        {/* List */}
+        {isLoadingData ? (
+          <div className="text-center py-10 text-slate-500">Loading...</div>
+        ) : activeTab === 'reports' ? (
+          reports.length === 0 ? (
+            <EmptyState
+              title="No items reported yet"
+              description="When you report a lost or found item, it will appear here."
+            />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {reports.map(item => (
+                <div key={item.id} className="relative">
+                  <ItemCard item={item} onClick={() => navigate(`/items/${item.id}`)} />
+                  {/* Status Badge overlay */}
+                  <div className="absolute top-2 right-2 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-full capitalize">
+                    {item.status.replace('_', ' ')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          claims.length === 0 ? (
+            <EmptyState
+              title="No claims made yet"
+              description="When you claim a lost item, its status will appear here."
+            />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {claims.map(claim => (
+                <div key={claim.id} className="relative">
+                  {claim.item && <ItemCard item={claim.item} onClick={() => navigate(`/items/${claim.item.id}`)} />}
+                  {/* Claim Status Badge overlay */}
+                  <div className={`absolute top-2 right-2 text-[9px] font-bold px-2 py-0.5 rounded-full capitalize shadow ${
+                    claim.status === 'approved' ? 'bg-emerald-500 text-white' : 
+                    claim.status === 'rejected' ? 'bg-red-500 text-white' : 
+                    'bg-amber-500 text-white'
+                  }`}>
+                    {claim.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        )}
 
         {/* Admin Section */}
         {isAdmin && (
