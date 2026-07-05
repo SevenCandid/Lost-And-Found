@@ -86,6 +86,8 @@ export interface Database {
           message: string
           link: string | null
           is_read: boolean
+          related_entity_id: string | null
+          related_entity_type: string | null
           created_at: string
         }
       }
