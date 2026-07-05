@@ -139,31 +139,31 @@ export function ChatRoomPage() {
   }
 
   if (isLoading) {
-    return <div className="flex h-screen items-center justify-center">Loading chat...</div>
+    return <div className="flex h-screen items-center justify-center bg-surface text-slate-500 dark:text-slate-400 transition-colors">Loading chat...</div>
   }
 
   if (!room) return null
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50">
+    <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-100 pt-safe shrink-0">
+      <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 pt-safe shrink-0 transition-colors">
         <div className="px-2 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full" title="Go back">
+          <button onClick={() => navigate(-1)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full transition-colors" title="Go back">
             <ChevronLeft size={24} />
           </button>
           
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0 overflow-hidden transition-colors">
               {otherUser?.id_photo_url ? (
             <img src={otherUser.id_photo_url} alt={otherUser.full_name} className="w-full h-full object-cover" />
               ) : (
-                <span className="font-bold text-slate-500">{otherUser?.full_name?.charAt(0) || '?'}</span>
+                <span className="font-bold text-slate-500 dark:text-slate-300">{otherUser?.full_name?.charAt(0) || '?'}</span>
               )}
             </div>
             <div className="min-w-0">
-              <h2 className="font-bold text-slate-800 truncate">{otherUser?.full_name || 'Unknown User'}</h2>
-              <div className="flex items-center gap-1 text-[10px] text-primary-600 font-medium truncate">
+              <h2 className="font-bold text-slate-800 dark:text-white truncate transition-colors">{otherUser?.full_name || 'Unknown User'}</h2>
+              <div className="flex items-center gap-1 text-[10px] text-primary-600 dark:text-primary-400 font-medium truncate">
                 <Package size={10} />
                 <span className="truncate">Re: {room.item.title}</span>
               </div>
@@ -175,7 +175,7 @@ export function ChatRoomPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-safe-bottom">
         {messages.length === 0 && (
-          <div className="text-center text-slate-400 text-sm mt-10">
+          <div className="text-center text-slate-400 dark:text-slate-500 text-sm mt-10">
             Send a message to start the conversation.
           </div>
         )}
@@ -191,13 +191,13 @@ export function ChatRoomPage() {
                 className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm ${
                   isMine 
                     ? 'bg-primary-600 text-white rounded-br-sm' 
-                    : 'bg-white border border-slate-100 text-slate-800 shadow-sm rounded-bl-sm'
+                    : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-100 shadow-sm rounded-bl-sm transition-colors'
                 }`}
               >
                 {msg.content}
               </div>
               {showTime && (
-                <span className="text-[10px] text-slate-400 mt-1 px-1">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">
                   {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               )}
@@ -208,14 +208,14 @@ export function ChatRoomPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-slate-100 p-3 pb-safe-bottom shrink-0">
+      <div className="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 p-3 pb-safe-bottom shrink-0 transition-colors">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <input
             type="text"
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 bg-slate-50 border border-slate-100 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+            className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
           />
           <button 
             type="submit"

@@ -41,13 +41,13 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
     <div
       onClick={onClick}
       className={cn(
-        'group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100',
-        'active:scale-[0.97] cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary-100',
+        'group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700 transition-colors',
+        'active:scale-[0.97] cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary-100 dark:hover:border-slate-600',
         className
       )}
     >
       {/* Image / Placeholder */}
-      <div className="relative aspect-square w-full bg-slate-50 overflow-hidden">
+      <div className="relative aspect-square w-full bg-slate-50 dark:bg-slate-700/50 overflow-hidden transition-colors">
         {item.image_url ? (
           <img
             src={item.image_url}
@@ -55,7 +55,7 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-800 transition-colors">
             <span className="text-4xl mb-1">{icon}</span>
             <span className="text-[10px] text-slate-400 font-medium">{item.category}</span>
           </div>
@@ -73,7 +73,7 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
       {/* Info */}
       <div className="p-2.5 flex flex-col justify-between flex-1">
         <div className="mb-2">
-          <h3 className="font-bold text-slate-800 text-[11px] leading-[1.3] break-words">
+          <h3 className="font-bold text-slate-800 dark:text-white text-[11px] leading-[1.3] break-words transition-colors">
             {item.title}
           </h3>
         </div>
@@ -85,7 +85,7 @@ export function ItemCard({ item, className, onClick }: ItemCardProps) {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-[10px] bg-slate-100 text-slate-500 font-medium px-1.5 py-0.5 rounded-full truncate max-w-[70%]">
+          <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 font-medium px-1.5 py-0.5 rounded-full truncate max-w-[70%] transition-colors">
             {item.category}
           </span>
           <div className="flex items-center gap-0.5 text-slate-400">

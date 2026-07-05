@@ -74,9 +74,9 @@ export function SearchPage() {
   }, [debouncedQuery, selectedCategory, typeFilter, dateFilter])
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface pt-safe pb-24">
+    <div className="flex flex-col min-h-screen bg-surface pt-safe pb-24 transition-colors">
       {/* Sticky Search Header */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 space-y-3">
+      <div className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl px-4 pt-4 pb-3 border-b border-slate-100 dark:border-slate-800 space-y-3 transition-colors">
         {/* Search input row */}
         <div className="flex items-center gap-2">
           <SearchBar
@@ -99,8 +99,8 @@ export function SearchPage() {
                   typeFilter === t
                     ? t === 'lost' ? 'bg-red-500 text-white border-red-500'
                       : t === 'found' ? 'bg-emerald-500 text-white border-emerald-500'
-                      : 'bg-slate-800 text-white border-slate-800'
-                    : 'bg-white text-slate-500 border-slate-200'
+                      : 'bg-slate-800 dark:bg-primary-600 text-white border-slate-800 dark:border-primary-600'
+                    : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
                 }`}
               >
                 {t === 'all' ? 'All' : t === 'lost' ? '🔴 Lost' : '🟢 Found'}
@@ -117,7 +117,7 @@ export function SearchPage() {
               className={`appearance-none w-[85px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
                 selectedCategory !== 'All'
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'bg-white text-slate-600 border-slate-200'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
               }`}
             >
               <option value="All">Category</option>
@@ -143,7 +143,7 @@ export function SearchPage() {
               className={`appearance-none w-[65px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
                 dateFilter !== 'any'
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'bg-white text-slate-600 border-slate-200'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
               }`}
             >
               <option value="any">Date</option>
@@ -166,7 +166,7 @@ export function SearchPage() {
       <div className="flex-1 px-4 pt-4">
         {/* Result count header */}
         {!isLoading && (
-          <p className="text-xs font-medium text-slate-400 mb-3 px-1">
+          <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-3 px-1">
             {results.length > 0
               ? `${results.length} item${results.length !== 1 ? 's' : ''} found`
               : query ? 'No results for "' + query + '"' : 'No items yet'}
@@ -176,12 +176,12 @@ export function SearchPage() {
         {isLoading ? (
           <div className="grid grid-cols-2 gap-3">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm animate-pulse">
-                <div className="aspect-square bg-slate-100" />
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm animate-pulse">
+                <div className="aspect-square bg-slate-100 dark:bg-slate-700" />
                 <div className="p-2.5 space-y-2">
-                  <div className="h-3 bg-slate-100 rounded-full w-3/4" />
-                  <div className="h-2.5 bg-slate-100 rounded-full w-1/2" />
-                  <div className="h-2.5 bg-slate-100 rounded-full w-2/3" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full w-3/4" />
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full w-1/2" />
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full w-2/3" />
                 </div>
               </div>
             ))}
@@ -199,8 +199,8 @@ export function SearchPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="text-5xl mb-4">{query ? '😕' : '🔍'}</div>
-            <p className="font-semibold text-slate-700">{query ? 'No results found' : 'Start searching'}</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="font-semibold text-slate-700 dark:text-slate-200">{query ? 'No results found' : 'Start searching'}</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
               {query ? 'Try different keywords or clear filters' : 'Type something or use the filter button'}
             </p>
           </div>

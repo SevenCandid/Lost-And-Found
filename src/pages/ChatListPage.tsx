@@ -113,14 +113,14 @@ export function ChatListPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface pb-24">
-      <header className="bg-white border-b border-slate-100 px-5 py-4">
-        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Messages</h1>
+    <div className="flex flex-col min-h-screen bg-surface pb-24 transition-colors">
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-5 py-4 transition-colors">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight transition-colors">Messages</h1>
       </header>
 
       <div className="flex-1 p-4">
         {isLoading ? (
-          <div className="text-center py-10 text-slate-500">Loading chats...</div>
+          <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading chats...</div>
         ) : rooms.length === 0 ? (
           <EmptyState title="No messages yet" description="When you contact someone about an item, the conversation will appear here." />
         ) : (
@@ -129,39 +129,39 @@ export function ChatListPage() {
               <div 
                 key={room.id}
                 onClick={() => navigate(`/chat/${room.id}`)}
-                className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary-200 transition-colors active:scale-[0.98]"
+                className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary-200 dark:hover:border-primary-700 transition-colors active:scale-[0.98]"
               >
-                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden relative">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0 overflow-hidden relative transition-colors">
                   {room.other_user?.id_photo_url ? (
                     <img src={room.other_user.id_photo_url} alt={room.other_user.full_name || 'User'} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="font-bold text-slate-500 text-lg">
+                    <span className="font-bold text-slate-500 dark:text-slate-300 text-lg">
                       {room.other_user?.full_name?.charAt(0) || '?'}
                     </span>
                   )}
                   {/* Item indicator overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary-100 border-2 border-white rounded-full flex items-center justify-center">
-                    <Package size={10} className="text-primary-600" />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary-100 dark:bg-primary-900 border-2 border-white dark:border-slate-800 rounded-full flex items-center justify-center transition-colors">
+                    <Package size={10} className="text-primary-600 dark:text-primary-400" />
                   </div>
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-baseline mb-0.5">
-                    <h3 className="font-bold text-slate-800 truncate pr-2">
+                    <h3 className="font-bold text-slate-800 dark:text-white truncate pr-2 transition-colors">
                       {room.other_user?.full_name || 'Unknown User'}
                     </h3>
-                    <span className="text-[10px] text-slate-400 font-medium shrink-0">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium shrink-0">
                       {room.last_message 
                         ? formatDistanceToNow(new Date(room.last_message.created_at), { addSuffix: true }) 
                         : formatDistanceToNow(new Date(room.created_at), { addSuffix: true })}
                     </span>
                   </div>
                   
-                  <p className="text-xs text-primary-600 font-semibold truncate mb-1">
+                  <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold truncate mb-1">
                     Re: {room.item.title}
                   </p>
                   
-                  <p className={`text-sm truncate ${room.last_message ? 'text-slate-600' : 'text-slate-400 italic'}`}>
+                  <p className={`text-sm truncate transition-colors ${room.last_message ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500 italic'}`}>
                     {room.last_message ? room.last_message.content : 'No messages yet'}
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export function ChatListPage() {
                     {room.unread_count}
                   </div>
                 ) : (
-                  <ChevronRight size={20} className="text-slate-300 shrink-0" />
+                  <ChevronRight size={20} className="text-slate-300 dark:text-slate-600 shrink-0" />
                 )}
               </div>
             ))}

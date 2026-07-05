@@ -68,7 +68,7 @@ export function ProfilePage() {
     .slice(0, 2) ?? '?'
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface">
+    <div className="flex flex-col min-h-screen bg-surface transition-colors">
       <header className="bg-white dark:bg-slate-900 px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center transition-colors">
         <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Profile</h1>
         <div className="flex items-center gap-2">
@@ -91,16 +91,16 @@ export function ProfilePage() {
 
       <div className="p-4 space-y-6">
         {/* User Info Card */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-5 flex items-center gap-4 shadow-soft">
-          <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-2xl font-bold shrink-0">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 p-5 flex items-center gap-4 shadow-soft transition-colors">
+          <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center text-2xl font-bold shrink-0 transition-colors">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-slate-800 truncate">{profile?.full_name ?? 'Loading…'}</h2>
-            <p className="text-slate-500 text-sm truncate">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white truncate transition-colors">{profile?.full_name ?? 'Loading…'}</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm truncate transition-colors">
               {profile?.department} · Level {profile?.level}
             </p>
-            <p className="text-xs text-slate-400 truncate mt-0.5">{profile?.index_number}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5 transition-colors">{profile?.index_number}</p>
           </div>
         </div>
 
@@ -128,11 +128,11 @@ export function ProfilePage() {
         )}
 
         {/* Tabs */}
-        <div className="flex bg-slate-100 p-1 rounded-full">
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-full transition-colors">
           <button 
             onClick={() => setActiveTab('reports')}
             className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeTab === 'reports' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              activeTab === 'reports' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             My Reports ({reports.length})
@@ -140,7 +140,7 @@ export function ProfilePage() {
           <button 
             onClick={() => setActiveTab('claims')}
             className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeTab === 'claims' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              activeTab === 'claims' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             My Claims ({claims.length})
@@ -149,7 +149,7 @@ export function ProfilePage() {
 
         {/* List */}
         {isLoadingData ? (
-          <div className="text-center py-10 text-slate-500">Loading...</div>
+          <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading...</div>
         ) : activeTab === 'reports' ? (
           reports.length === 0 ? (
             <EmptyState
@@ -196,12 +196,12 @@ export function ProfilePage() {
 
         {/* Admin Section */}
         {isAdmin && (
-          <div className="pt-2 border-t border-slate-100">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 transition-colors">
             <Button
               variant="outline"
               fullWidth
               onClick={() => navigate('/admin')}
-              className="text-primary-600 border-primary-200 hover:bg-primary-50"
+              className="text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-800 hover:bg-primary-50 dark:hover:bg-primary-900/20"
             >
               <ShieldAlert size={18} className="mr-2" />
               Admin Dashboard
