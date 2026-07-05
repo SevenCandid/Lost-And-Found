@@ -95,45 +95,9 @@ export function OverviewTab() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {/* Pending Approvals Metric */}
-      <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center col-span-2">
-        <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-3">
-          <ShieldAlert size={24} />
-        </div>
-        <h3 className="text-3xl font-bold text-slate-800">{stats.pendingApprovals}</h3>
-        <p className="text-sm font-medium text-slate-500">Pending Approvals</p>
-      </div>
-
-      {/* Users Metric */}
-      <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-        <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mb-3">
-          <Users size={24} />
-        </div>
-        <h3 className="text-2xl font-bold text-slate-800">{stats.totalUsers}</h3>
-        <p className="text-xs font-medium text-slate-500">Total Users</p>
-      </div>
-
-      {/* Active Items Metric */}
-      <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-        <div className="w-12 h-12 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mb-3">
-          <PackageSearch size={24} />
-        </div>
-        <h3 className="text-2xl font-bold text-slate-800">{stats.activeItems}</h3>
-        <p className="text-xs font-medium text-slate-500">Active Reports</p>
-      </div>
-
-      {/* Resolved Items Metric */}
-      <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-        <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-3">
-          <CheckCircle size={24} />
-        </div>
-        <h3 className="text-2xl font-bold text-slate-800">{stats.resolvedItems}</h3>
-        <p className="text-xs font-medium text-slate-500">Resolved & Claimed</p>
-      </div>
-
-      {/* Charts Section */}
-      <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+    <div className="flex flex-col gap-6">
+      {/* Charts Section (Moved to top) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Timeline Chart */}
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
           <h3 className="text-base font-bold text-slate-800 mb-4">Reports Over Last 7 Days</h3>
@@ -188,6 +152,46 @@ export function OverviewTab() {
           </div>
         </div>
       </div>
+
+      {/* Summary Cards (Compact, bottom) */}
+      <div className="grid grid-cols-4 gap-2 md:gap-3">
+        {/* Pending Approvals Metric */}
+        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+            <ShieldAlert size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
+          </div>
+          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.pendingApprovals}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Pending</p>
+        </div>
+
+        {/* Users Metric */}
+        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+            <Users size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
+          </div>
+          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.totalUsers}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Users</p>
+        </div>
+
+        {/* Active Items Metric */}
+        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+            <PackageSearch size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
+          </div>
+          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.activeItems}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Active</p>
+        </div>
+
+        {/* Resolved Items Metric */}
+        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+            <CheckCircle size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
+          </div>
+          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.resolvedItems}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Resolved</p>
+        </div>
+      </div>
+
     </div>
   )
 }
