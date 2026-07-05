@@ -136,7 +136,7 @@ export function ChatRoomPage() {
           user_id: otherUser.id,
           type: 'new_message',
           title: 'New Message',
-          content: `New message from ${profile?.full_name || 'Someone'}`,
+          message: `New message from ${profile?.full_name || 'Someone'}`,
           related_entity_id: id,
           related_entity_type: 'chat_room'
         }).then()
