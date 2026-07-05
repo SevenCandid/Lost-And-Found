@@ -11,6 +11,7 @@ type ChatRoom = Database['public']['Tables']['chat_rooms']['Row'] & {
   item: Database['public']['Tables']['items']['Row']
   other_user?: Database['public']['Tables']['users']['Row']
   last_message?: Database['public']['Tables']['messages']['Row']
+  unread_count?: number
 }
 
 export function ChatListPage() {
@@ -22,6 +23,23 @@ export function ChatListPage() {
   useEffect(() => {
     if (!user) return
     fetchRooms()
+
+    // Listen for new messages or notifications to update the badges and last message
+    const channelName = `chat_list_${user.id}_${Math.random().toString(36).substring(7)}`
+    const channel = supabase.channel(channelName)
+    
+    channel
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
+        fetchRooms()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` }, () => {
+        fetchRooms()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [user])
 
   const fetchRooms = async () => {
@@ -43,6 +61,14 @@ export function ChatListPage() {
         return
       }
 
+      // Fetch all unread message notifications for the user
+      const { data: unreadNotifs } = await supabase
+        .from('notifications')
+        .select('related_entity_id')
+        .eq('user_id', user!.id)
+        .eq('is_read', false)
+        .eq('type', 'new_message')
+
       // 2. Fetch other users' profiles and last message for each room
       const enrichedRooms = await Promise.all(roomData.map(async (room: any) => {
         const otherUserId = room.user1_id === user!.id ? room.user2_id : room.user1_id
@@ -61,10 +87,13 @@ export function ChatListPage() {
           .limit(1)
           .single()
         
+        const unreadCount = unreadNotifs?.filter((n: any) => n.related_entity_id === room.id).length || 0
+
         return {
           ...room,
           other_user: otherUser,
-          last_message: lastMessage
+          last_message: lastMessage,
+          unread_count: unreadCount
         }
       }))
 
@@ -136,8 +165,13 @@ export function ChatListPage() {
                     {room.last_message ? room.last_message.content : 'No messages yet'}
                   </p>
                 </div>
-                
-                <ChevronRight size={20} className="text-slate-300 shrink-0" />
+                {room.unread_count && room.unread_count > 0 ? (
+                  <div className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shrink-0 shadow-sm">
+                    {room.unread_count}
+                  </div>
+                ) : (
+                  <ChevronRight size={20} className="text-slate-300 shrink-0" />
+                )}
               </div>
             ))}
           </div>
