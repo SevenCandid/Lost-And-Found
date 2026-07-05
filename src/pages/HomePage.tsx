@@ -97,7 +97,7 @@ export function HomePage() {
           </div>
           <button 
             onClick={() => navigate('/notifications')}
-            className="relative p-2.5 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-full active:scale-95 transition-transform"
+            className="relative p-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-full active:scale-95 transition-colors"
           >
             <Bell size={20} />
             {unreadCount > 0 && (
@@ -121,8 +121,8 @@ export function HomePage() {
             onChange={e => setCategoryFilter(e.target.value)}
             className={`appearance-none w-[85px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
               categoryFilter !== 'All'
-                ? 'bg-primary-600 text-white border-primary-600'
-                : 'bg-white text-slate-600 border-slate-200'
+                ? 'bg-primary-600 dark:bg-primary-700 text-white border-primary-600 dark:border-primary-700'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
             }`}
           >
             <option value="All">Category</option>
@@ -131,7 +131,7 @@ export function HomePage() {
             ))}
           </select>
           <div className={`pointer-events-none absolute inset-y-0 right-2 flex items-center ${
-            categoryFilter !== 'All' ? 'text-white' : 'text-slate-400'
+            categoryFilter !== 'All' ? 'text-white' : 'text-slate-400 dark:text-slate-500'
           }`}>
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
               <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

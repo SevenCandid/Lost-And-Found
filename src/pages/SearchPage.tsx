@@ -99,7 +99,7 @@ export function SearchPage() {
                   typeFilter === t
                     ? t === 'lost' ? 'bg-red-500 text-white border-red-500'
                       : t === 'found' ? 'bg-emerald-500 text-white border-emerald-500'
-                      : 'bg-slate-800 dark:bg-primary-600 text-white border-slate-800 dark:border-primary-600'
+                      : 'bg-primary-600 dark:bg-primary-600 text-white border-primary-600 dark:border-primary-600'
                     : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
                 }`}
               >
@@ -116,7 +116,7 @@ export function SearchPage() {
               onChange={e => setSelectedCategory(e.target.value)}
               className={`appearance-none w-[85px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
                 selectedCategory !== 'All'
-                  ? 'bg-primary-600 text-white border-primary-600'
+                  ? 'bg-primary-600 dark:bg-primary-700 text-white border-primary-600 dark:border-primary-700'
                   : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
               }`}
             >
@@ -142,7 +142,7 @@ export function SearchPage() {
               onChange={e => setDateFilter(e.target.value as typeof dateFilter)}
               className={`appearance-none w-[65px] pl-2.5 pr-6 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer focus:outline-none truncate ${
                 dateFilter !== 'any'
-                  ? 'bg-primary-600 text-white border-primary-600'
+                  ? 'bg-primary-600 dark:bg-primary-700 text-white border-primary-600 dark:border-primary-700'
                   : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
               }`}
             >

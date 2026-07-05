@@ -54,7 +54,7 @@ export const PillFilter = forwardRef<HTMLDivElement, BadgeProps & { active?: boo
         className={cn(
           'border shadow-sm transition-colors',
           active 
-            ? 'bg-slate-800 dark:bg-primary-600 text-white border-slate-800 dark:border-primary-600 hover:bg-slate-700 dark:hover:bg-primary-500' 
+            ? 'bg-primary-600 dark:bg-primary-600 text-white border-primary-600 dark:border-primary-600 hover:bg-primary-700 dark:hover:bg-primary-500' 
             : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600',
           className
         )}
