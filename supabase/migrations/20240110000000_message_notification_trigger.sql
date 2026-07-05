@@ -1,5 +1,5 @@
--- Create a server-side trigger to notify the other chat participant whenever a new message is sent
--- This is more reliable than doing it in the frontend code
+-- Update the trigger to delete-before-insert so only ONE unread notification
+-- exists per room per user at any time — prevents double-counting from cached clients
 
 create or replace function public.notify_on_new_message()
 returns trigger as $$
@@ -21,10 +21,15 @@ begin
   -- Get sender name
   select full_name into v_sender_name from public.users where id = NEW.sender_id;
 
-  -- Delete any existing unread notification for this room+recipient to avoid stacking
-  -- (we'll re-insert with the latest count logic handled by the query)
-  
-  -- Insert a fresh notification
+  -- Delete ALL existing unread notifications for this room+recipient first
+  -- This ensures only 1 badge per conversation, even if duplicate inserts happen
+  delete from public.notifications 
+  where user_id = v_recipient_id 
+    and type = 'new_message'
+    and related_entity_id = NEW.room_id
+    and is_read = false;
+
+  -- Insert a fresh single notification
   insert into public.notifications (user_id, type, title, message, related_entity_id, related_entity_type, is_read)
   values (
     v_recipient_id,
@@ -40,10 +45,8 @@ begin
 end;
 $$ language plpgsql security definer;
 
--- Drop existing trigger if it exists
+-- Re-create the trigger
 drop trigger if exists on_new_message_notify on public.messages;
-
--- Create the trigger
 create trigger on_new_message_notify
   after insert on public.messages
   for each row execute procedure public.notify_on_new_message();
