@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { PoweredBy } from '../components/ui/PoweredBy'
-import { Settings, LogOut, ShieldAlert, User } from 'lucide-react'
+import { Settings, LogOut, ShieldAlert, User, Moon, Sun } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
 import toast from 'react-hot-toast'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
@@ -16,6 +17,7 @@ type Claim = Database['public']['Tables']['claims']['Row'] & { item: Item }
 export function ProfilePage() {
   const navigate = useNavigate()
   const { profile, isAdmin, signOut } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const [activeTab, setActiveTab] = useState<'reports' | 'claims'>('reports')
   const [reports, setReports] = useState<Item[]>([])
   const [claims, setClaims] = useState<Claim[]>([])
@@ -67,15 +69,24 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface">
-      <header className="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-slate-800 tracking-tight">Profile</h1>
-        <button
-          onClick={() => navigate('/settings')}
-          className="p-2 -mr-2 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-full"
-          title="Settings"
-        >
-          <Settings size={20} />
-        </button>
+      <header className="bg-white dark:bg-slate-900 px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center transition-colors">
+        <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Profile</h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-full transition-colors"
+            title="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button
+            onClick={() => navigate('/settings')}
+            className="p-2 -mr-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-full transition-colors"
+            title="Settings"
+          >
+            <Settings size={20} />
+          </button>
+        </div>
       </header>
 
       <div className="p-4 space-y-6">

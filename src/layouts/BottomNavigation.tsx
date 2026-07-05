@@ -63,7 +63,7 @@ export function BottomNavigation() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-slate-100 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe transition-colors">
       <div className="flex items-center justify-around px-4 h-16 max-w-md mx-auto relative">
         {navItems.map((item) => (
           <NavLink
@@ -73,7 +73,7 @@ export function BottomNavigation() {
             className={({ isActive }) =>
               cn(
                 'flex flex-col items-center justify-center w-16 gap-1 transition-colors duration-200',
-                isActive ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'
+                isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
               )
             }
           >

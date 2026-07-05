@@ -88,10 +88,10 @@ export function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface relative pb-20">
       {/* Greeting */}
-      <header className="bg-white px-5 pt-4 pb-3 flex items-center justify-between">
+      <header className="bg-white dark:bg-slate-900 px-5 pt-4 pb-3 flex items-center justify-between transition-colors">
           <div>
-            <p className="text-sm font-medium text-slate-500">Welcome back,</p>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Welcome back,</p>
+            <h1 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
               {firstName} <span className="text-xl">👋</span>
             </h1>
           </div>
@@ -142,7 +142,7 @@ export function HomePage() {
 
       {/* Feed */}
       <div className="flex-1 px-4 pt-2 pb-6">
-        <h2 className="text-base font-bold text-slate-800 tracking-tight mb-3 px-1">
+        <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-3 px-1">
           {categoryFilter === 'All' ? 'Latest Items' : categoryFilter}
           {!isLoading && items.length > 0 && (
             <span className="ml-2 text-xs font-normal text-slate-400">{items.length} results</span>
@@ -152,12 +152,12 @@ export function HomePage() {
         {isLoading ? (
           <div className="grid grid-cols-2 gap-3">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm animate-pulse">
-                <div className="aspect-square bg-slate-100" />
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm animate-pulse">
+                <div className="aspect-square bg-slate-100 dark:bg-slate-700" />
                 <div className="p-2.5 space-y-2">
-                  <div className="h-3 bg-slate-100 rounded-full w-3/4" />
-                  <div className="h-2.5 bg-slate-100 rounded-full w-1/2" />
-                  <div className="h-2.5 bg-slate-100 rounded-full w-2/3" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full w-3/4" />
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full w-1/2" />
+                  <div className="h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full w-2/3" />
                 </div>
               </div>
             ))}

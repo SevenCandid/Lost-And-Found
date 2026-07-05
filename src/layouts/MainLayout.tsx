@@ -4,8 +4,8 @@ import { TopHeader } from '../components/TopHeader'
 
 export function MainLayout() {
   return (
-    <div className="min-h-screen bg-background font-sans text-slate-900 pb-24 md:pb-0 flex justify-center">
-      <main className="w-full max-w-md min-h-screen bg-white shadow-xl shadow-slate-200/50 sm:border-x border-slate-100 relative flex flex-col">
+    <div className="min-h-screen bg-background font-sans text-slate-900 dark:text-slate-100 pb-24 md:pb-0 flex justify-center transition-colors">
+      <main className="w-full max-w-md min-h-screen bg-surface shadow-xl shadow-slate-200/50 dark:shadow-none sm:border-x border-slate-100 dark:border-slate-800 relative flex flex-col transition-colors">
         <TopHeader />
         <div className="flex-1 overflow-x-hidden">
           <Outlet />
