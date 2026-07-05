@@ -110,7 +110,7 @@ export function AdminPage() {
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors">
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden md:flex flex-col w-64 shrink-0 bg-slate-900 h-screen sticky top-0">
         <SidebarContent />
@@ -138,14 +138,14 @@ export function AdminPage() {
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
 
         {/* Mobile top bar */}
-        <header className="md:hidden sticky top-0 z-30 bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3">
+        <header className="md:hidden sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3 transition-colors">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <Menu size={22} />
           </button>
-          <h1 className="text-lg font-bold text-slate-800">Admin Portal</h1>
+          <h1 className="text-lg font-bold text-slate-800 dark:text-white transition-colors">Admin Portal</h1>
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={handleSignOut}
@@ -158,12 +158,12 @@ export function AdminPage() {
         </header>
 
         {/* Desktop page header */}
-        <div className="hidden md:flex items-center justify-between px-8 py-6 bg-white border-b border-slate-200">
+        <div className="hidden md:flex items-center justify-between px-8 py-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-colors">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 capitalize">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white capitalize transition-colors">
               {navItems.find(n => n.id === activeTab)?.label}
             </h2>
-            <p className="text-slate-500 text-sm mt-0.5">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5 transition-colors">
               Manage your Lost & Found portal
             </p>
           </div>

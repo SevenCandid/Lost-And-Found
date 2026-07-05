@@ -162,30 +162,30 @@ export function ItemDetailsPage() {
         <button 
           onClick={() => navigate(-1)}
           title="Go back"
-          className="w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 pointer-events-auto active:scale-95 transition-transform"
+          className="w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 dark:text-white pointer-events-auto active:scale-95 transition-transform"
         >
           <ChevronLeft size={24} />
         </button>
-        <button title="Share" className="w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 pointer-events-auto active:scale-95 transition-transform">
+        <button title="Share" className="w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 dark:text-white pointer-events-auto active:scale-95 transition-transform">
           <Share2 size={20} />
         </button>
       </header>
 
       {/* Image Area */}
-      <div className="w-full aspect-square bg-slate-200 relative">
+      <div className="w-full aspect-square bg-slate-200 dark:bg-slate-800 relative">
         {item.image_url ? (
           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-400 bg-slate-100">
-            <span className="font-medium text-slate-500">No Image Provided</span>
+          <div className="absolute inset-0 flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800 transition-colors">
+            <span className="font-medium text-slate-500 dark:text-slate-400">No Image Provided</span>
           </div>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-5 relative -mt-6 bg-surface rounded-t-[32px] min-h-[50vh]">
+      <div className="p-5 relative -mt-6 bg-surface rounded-t-[32px] min-h-[50vh] transition-colors">
         <div className="flex justify-between items-start mb-4">
-          <h1 className="text-2xl font-bold text-slate-800 break-words pr-4 leading-tight">{item.title}</h1>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-white break-words pr-4 leading-tight transition-colors">{item.title}</h1>
           <Badge variant={isLost ? 'danger' : 'success'} className="shrink-0">
             {isLost ? 'Lost' : 'Found'}
           </Badge>
@@ -199,38 +199,38 @@ export function ItemDetailsPage() {
           <CustodyBadge item={item} />
         )}
 
-        <div className="space-y-4 text-slate-600 mb-6">
+        <div className="space-y-4 text-slate-600 dark:text-slate-400 mb-6 transition-colors">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-500 shrink-0 transition-colors">
               <MapPin size={20} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-slate-800 truncate">{item.location}</p>
+              <p className="text-sm font-semibold text-slate-800 dark:text-white truncate transition-colors">{item.location}</p>
               <p className="text-xs">Location</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-500 shrink-0 transition-colors">
               <Calendar size={20} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-800">{formattedDate}</p>
+              <p className="text-sm font-semibold text-slate-800 dark:text-white transition-colors">{formattedDate}</p>
               <p className="text-xs">Date {isLost ? 'Lost' : 'Found'}</p>
             </div>
           </div>
         </div>
 
         {item.description && (
-          <div className="mb-6 border-t border-slate-100 pt-6">
-            <h3 className="text-sm font-semibold text-slate-800 mb-2">Description</h3>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">{item.description}</p>
+          <div className="mb-6 border-t border-slate-100 dark:border-slate-800 pt-6 transition-colors">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-2 transition-colors">Description</h3>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300 transition-colors">{item.description}</p>
           </div>
         )}
         
         {reporter && (
-          <div className="flex items-center gap-3 border border-slate-100 p-3 rounded-2xl bg-white shadow-sm mt-6">
-            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold overflow-hidden shrink-0">
+          <div className="flex items-center gap-3 border border-slate-100 dark:border-slate-700 p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-sm mt-6 transition-colors">
+            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-300 font-bold overflow-hidden shrink-0 transition-colors">
               {reporter.id_photo_url ? (
                 <img src={reporter.id_photo_url} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -238,10 +238,10 @@ export function ItemDetailsPage() {
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-slate-800 flex items-center gap-1 truncate">
+              <p className="text-sm font-semibold text-slate-800 dark:text-white flex items-center gap-1 truncate transition-colors">
                 {reporter.full_name} <CheckCircle2 size={14} className="text-success-500 shrink-0" />
               </p>
-              <p className="text-xs text-slate-500 truncate">{reporter.department} · {isLost ? 'Loser' : 'Finder'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate transition-colors">{reporter.department} · {isLost ? 'Loser' : 'Finder'}</p>
             </div>
           </div>
         )}
@@ -249,7 +249,7 @@ export function ItemDetailsPage() {
 
       {/* Sticky Bottom Action for Non-Reporter */}
       {item.status === 'active' && !isReporter && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-slate-100 pb-safe max-w-md mx-auto z-30 flex gap-3">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe max-w-md mx-auto z-30 flex gap-3 transition-colors">
           <Button 
             variant="outline" 
             className="flex-1 bg-white" 
@@ -303,7 +303,7 @@ export function ItemDetailsPage() {
 
       {/* Sticky Bottom Action for Reporter */}
       {isReporter && item.type === 'found' && !['returned', 'closed'].includes(item.status) && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-slate-100 pb-safe max-w-md mx-auto z-30">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe max-w-md mx-auto z-30 transition-colors">
           <Button 
             fullWidth 
             onClick={handleMarkReturned}
@@ -326,7 +326,7 @@ export function ItemDetailsPage() {
               value={proofDescription}
               onChange={e => setProofDescription(e.target.value)}
               required
-              className="w-full bg-slate-50 border border-slate-100 text-slate-800 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all min-h-[120px] resize-none"
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all min-h-[120px] resize-none"
             />
           </div>
           <Button type="submit" fullWidth size="lg" isLoading={isSubmitting}>

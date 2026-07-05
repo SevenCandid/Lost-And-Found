@@ -59,7 +59,7 @@ export function ApprovalsTab() {
   }
 
   if (isLoading) {
-    return <div className="text-center py-10 text-slate-500">Loading...</div>
+    return <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading...</div>
   }
 
   if (pendingUsers.length === 0) {
@@ -69,16 +69,16 @@ export function ApprovalsTab() {
   return (
     <div className="space-y-4">
       {pendingUsers.map(user => (
-        <div key={user.id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+        <div key={user.id} className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col gap-4 transition-colors">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shrink-0 transition-colors">
                 <User size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-800">{user.full_name}</h3>
-                <p className="text-sm text-slate-500">{user.index_number}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{user.email}</p>
+                <h3 className="font-bold text-slate-800 dark:text-white transition-colors">{user.full_name}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 transition-colors">{user.index_number}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 transition-colors">{user.email}</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -100,20 +100,20 @@ export function ApprovalsTab() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="bg-slate-50 p-3 rounded-2xl">
-              <span className="block text-xs text-slate-400 font-medium mb-0.5">Department</span>
-              <span className="font-semibold text-slate-700">{user.department}</span>
+            <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-2xl transition-colors">
+              <span className="block text-xs text-slate-400 dark:text-slate-500 font-medium mb-0.5">Department</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-200 transition-colors">{user.department}</span>
             </div>
-            <div className="bg-slate-50 p-3 rounded-2xl">
-              <span className="block text-xs text-slate-400 font-medium mb-0.5">Level</span>
-              <span className="font-semibold text-slate-700">{user.level}</span>
+            <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-2xl transition-colors">
+              <span className="block text-xs text-slate-400 dark:text-slate-500 font-medium mb-0.5">Level</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-200 transition-colors">{user.level}</span>
             </div>
           </div>
 
           {user.id_photo_url && (
             <div className="mt-2">
-              <span className="block text-xs text-slate-400 font-medium mb-2">ID Card Photo</span>
-              <div className="w-full h-48 bg-slate-100 rounded-2xl overflow-hidden relative group">
+              <span className="block text-xs text-slate-400 dark:text-slate-500 font-medium mb-2">ID Card Photo</span>
+              <div className="w-full h-48 bg-slate-100 dark:bg-slate-700 rounded-2xl overflow-hidden relative group transition-colors">
                 <img 
                   src={user.id_photo_url} 
                   alt="Student ID" 

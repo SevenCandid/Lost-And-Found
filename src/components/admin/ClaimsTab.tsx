@@ -79,7 +79,7 @@ export function ClaimsTab() {
   }
 
   if (isLoading) {
-    return <div className="text-center py-10 text-slate-500">Loading claims...</div>
+    return <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading claims...</div>
   }
 
   if (claims.length === 0) {
@@ -89,16 +89,16 @@ export function ClaimsTab() {
   return (
     <div className="space-y-4">
       {claims.map(claim => (
-        <div key={claim.id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+        <div key={claim.id} className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col gap-4 transition-colors">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shrink-0 transition-colors">
                 <FileText size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-800 line-clamp-1">{claim.item.title}</h3>
-                <p className="text-sm text-slate-500">Claimed by {claim.claimer.full_name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{formatDistanceToNow(new Date(claim.created_at))} ago</p>
+                <h3 className="font-bold text-slate-800 dark:text-white line-clamp-1 transition-colors">{claim.item.title}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 transition-colors">Claimed by {claim.claimer.full_name}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 transition-colors">{formatDistanceToNow(new Date(claim.created_at))} ago</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -119,19 +119,19 @@ export function ClaimsTab() {
             </div>
           </div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl">
-            <span className="block text-xs text-slate-500 font-semibold mb-1 uppercase tracking-wider">Proof of Ownership</span>
-            <p className="text-sm text-slate-700 whitespace-pre-wrap">{claim.proof_description}</p>
+          <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-2xl transition-colors">
+            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1 uppercase tracking-wider">Proof of Ownership</span>
+            <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap transition-colors">{claim.proof_description}</p>
           </div>
           
           <div className="grid grid-cols-2 gap-3 text-sm">
-             <div className="bg-slate-50 p-3 rounded-2xl">
-               <span className="block text-xs text-slate-400 font-medium mb-0.5">Claimer Index</span>
-               <span className="font-semibold text-slate-700">{claim.claimer.index_number}</span>
+             <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-2xl transition-colors">
+               <span className="block text-xs text-slate-400 dark:text-slate-500 font-medium mb-0.5">Claimer Index</span>
+               <span className="font-semibold text-slate-700 dark:text-slate-200 transition-colors">{claim.claimer.index_number}</span>
              </div>
-             <div className="bg-slate-50 p-3 rounded-2xl">
-               <span className="block text-xs text-slate-400 font-medium mb-0.5">Claimer Email</span>
-               <span className="font-semibold text-slate-700 truncate block">{claim.claimer.email}</span>
+             <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-2xl transition-colors">
+               <span className="block text-xs text-slate-400 dark:text-slate-500 font-medium mb-0.5">Claimer Email</span>
+               <span className="font-semibold text-slate-700 dark:text-slate-200 truncate block transition-colors">{claim.claimer.email}</span>
              </div>
           </div>
         </div>

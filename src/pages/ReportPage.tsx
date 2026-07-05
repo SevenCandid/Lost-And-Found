@@ -143,9 +143,9 @@ export function ReportPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface">
-      <header className="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-slate-800 tracking-tight">Report Item</h1>
+    <div className="flex flex-col min-h-screen bg-surface transition-colors">
+      <header className="bg-white dark:bg-slate-900 px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center transition-colors">
+        <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight transition-colors">Report Item</h1>
       </header>
 
       <form onSubmit={handleSubmit} className="flex-1 p-4 space-y-6 pb-24 max-w-md mx-auto w-full">
@@ -162,8 +162,8 @@ export function ReportPage() {
           onClick={() => fileInputRef.current?.click()}
           className={`w-full aspect-video rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden active:scale-[0.98] ${
             photoPreview
-              ? 'border-primary-400 bg-primary-50'
-              : 'border-slate-300 bg-slate-50 hover:border-primary-400 hover:bg-primary-50'
+              ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20'
+              : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
           }`}
         >
           {photoPreview ? (
@@ -171,7 +171,7 @@ export function ReportPage() {
           ) : (
             <>
               <Camera size={40} className="mb-2 text-slate-400" />
-              <span className="font-medium text-slate-600">Add a clear photo</span>
+              <span className="font-medium text-slate-600 dark:text-slate-300">Add a clear photo</span>
             </>
           )}
         </div>
@@ -192,26 +192,26 @@ export function ReportPage() {
         )}
 
         {/* Type Toggle */}
-        <div className="flex bg-slate-100 p-1 rounded-full shadow-inner">
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-full shadow-inner transition-colors">
           <button
             type="button"
-            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${type === 'lost' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${type === 'lost' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white'}`}
             onClick={() => setType('lost')}
           >
             I lost something
           </button>
           <button
             type="button"
-            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${type === 'found' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${type === 'found' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white'}`}
             onClick={() => setType('found')}
           >
             I found something
           </button>
         </div>
 
-        <div className="space-y-5 bg-white p-5 rounded-3xl border border-slate-100 shadow-soft">
+        <div className="space-y-5 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-soft transition-colors">
           <div>
-            <label className="text-sm font-semibold text-slate-700 block mb-1.5">What is it?</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1.5 transition-colors">What is it?</label>
             <Input 
               placeholder="e.g. Blue iPhone 13 Pro" 
               value={title}
@@ -220,13 +220,13 @@ export function ReportPage() {
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-slate-700 block mb-1.5">Category</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1.5 transition-colors">Category</label>
             <div className="relative">
               <select
                 title="Select category"
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-100 text-slate-800 rounded-2xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 text-slate-800 dark:text-white rounded-2xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
                 required
               >
                 <option value="" disabled>Select a category</option>
@@ -247,7 +247,7 @@ export function ReportPage() {
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-slate-700 block mb-1.5">Additional Details</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1.5 transition-colors">Additional Details</label>
             <div className="relative">
               <div className="absolute top-3 left-4 text-slate-400">
                 <AlignLeft size={20} />
@@ -256,13 +256,13 @@ export function ReportPage() {
                 placeholder="Any unique marks, colors, or serial numbers?"
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-100 text-slate-800 rounded-2xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all min-h-[100px] resize-y"
+                className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 text-slate-800 dark:text-white placeholder:text-slate-400 rounded-2xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all min-h-[100px] resize-y"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-slate-700 block mb-1.5">Where did this happen?</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1.5 transition-colors">Where did this happen?</label>
             <Input 
               icon={<MapPin size={20} />} 
               placeholder="e.g. Main Library, 2nd Floor" 
@@ -273,7 +273,7 @@ export function ReportPage() {
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-slate-700 block mb-1.5">When did this happen?</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 block mb-1.5 transition-colors">When did this happen?</label>
             <Input 
               type="date"
               icon={<Calendar size={20} />} 
@@ -285,7 +285,7 @@ export function ReportPage() {
         </div>
 
         {type === 'found' && (
-          <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-soft">
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-soft transition-colors">
             <CustodyPicker 
               value={custody} 
               category={category} 
@@ -298,7 +298,7 @@ export function ReportPage() {
           <Button type="submit" fullWidth size="lg" isLoading={isLoading} className="h-14 text-lg">
             Submit Report
           </Button>
-          <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
+          <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-4 leading-relaxed">
             By submitting, you confirm these details are accurate to the best of your knowledge.
           </p>
         </div>

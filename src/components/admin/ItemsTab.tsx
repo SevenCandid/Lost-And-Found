@@ -89,25 +89,25 @@ export function ItemsTab() {
             placeholder="Search items..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-100 rounded-2xl outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 rounded-2xl outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
           />
         </div>
         <div className="flex gap-2">
           <button 
             onClick={() => setFilter('all')}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'all' ? 'bg-slate-800 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-100'}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'all' ? 'bg-slate-800 dark:bg-primary-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700'}`}
           >
             All
           </button>
           <button 
             onClick={() => setFilter('lost')}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'lost' ? 'bg-danger-500 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-100'}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'lost' ? 'bg-danger-500 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700'}`}
           >
             Lost
           </button>
           <button 
             onClick={() => setFilter('found')}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'found' ? 'bg-primary-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-100'}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${filter === 'found' ? 'bg-primary-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700'}`}
           >
             Found
           </button>
@@ -115,25 +115,25 @@ export function ItemsTab() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-10 text-slate-500">Loading items...</div>
+        <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading items...</div>
       ) : filteredItems.length === 0 ? (
         <EmptyState title="No items found" description="Try adjusting your search or filters." />
       ) : (
         <div className="space-y-3">
           {filteredItems.map(item => (
-            <div key={item.id} className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between gap-4">
+            <div key={item.id} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between gap-4 transition-colors">
               <div className="flex items-center gap-3 min-w-0">
                 {item.image_url ? (
                   <img src={item.image_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
                 ) : (
-                  <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-xl flex items-center justify-center shrink-0 transition-colors">
                     <Package size={20} className="text-slate-400" />
                   </div>
                 )}
                 
                 <div className="min-w-0">
-                  <h3 className="font-bold text-slate-800 truncate leading-tight">{item.title}</h3>
-                  <p className="text-xs text-slate-500 truncate mt-0.5">{item.location} • {formatDistanceToNow(new Date(item.created_at))} ago</p>
+                  <h3 className="font-bold text-slate-800 dark:text-white truncate leading-tight transition-colors">{item.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5 transition-colors">{item.location} • {formatDistanceToNow(new Date(item.created_at))} ago</p>
                   <div className="mt-1.5 flex items-center gap-2">
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                       item.type === 'lost' ? 'bg-danger-50 text-danger-600' : 'bg-primary-50 text-primary-600'
@@ -141,7 +141,7 @@ export function ItemsTab() {
                       {item.type}
                     </span>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                      item.status === 'active' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-600'
+                      item.status === 'active' ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300' : 'bg-emerald-50 text-emerald-600'
                     }`}>
                       {item.status}
                     </span>

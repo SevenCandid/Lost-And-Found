@@ -70,25 +70,25 @@ export function UsersTab() {
           placeholder="Search by name or index number..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-white border border-slate-100 rounded-2xl outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
+          className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 rounded-2xl outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
         />
       </div>
 
       {isLoading ? (
-        <div className="text-center py-10 text-slate-500">Loading users...</div>
+        <div className="text-center py-10 text-slate-500 dark:text-slate-400">Loading users...</div>
       ) : filteredUsers.length === 0 ? (
         <EmptyState title="No users found" description="Try adjusting your search." />
       ) : (
         filteredUsers.map(user => (
-          <div key={user.id} className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between gap-4">
+          <div key={user.id} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between gap-4 transition-colors">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shrink-0 transition-colors">
                 <User size={20} />
               </div>
               <div className="min-w-0">
-                <h3 className="font-bold text-slate-800 truncate">{user.full_name}</h3>
-                <p className="text-xs text-slate-500 truncate">{user.index_number} • {user.department}</p>
-                <p className="text-xs text-slate-400 truncate mt-0.5">{user.email}</p>
+                <h3 className="font-bold text-slate-800 dark:text-white truncate transition-colors">{user.full_name}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate transition-colors">{user.index_number} • {user.department}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5 transition-colors">{user.email}</p>
                 <div className="mt-1 flex items-center gap-2">
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                     user.verification_status === 'verified' ? 'bg-emerald-50 text-emerald-600' :
