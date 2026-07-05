@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { CATEGORY_GROUPS } from '../lib/categories'
 import { PoweredBy } from '../components/ui/PoweredBy'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { PillFilter } from '../components/ui/Badge'
 import { ItemCard } from '../components/ItemCard'
 import { supabase } from '../lib/supabase'
@@ -49,61 +49,18 @@ export function HomePage() {
     fetchItems()
   }, [filter, categoryFilter])
 
-  const [unreadCount, setUnreadCount] = useState(0)
-
-  useEffect(() => {
-    if (!profile) return
-    
-    async function fetchUnreadCount() {
-      const { count } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', profile!.id)
-        .eq('is_read', false)
-      
-      setUnreadCount(count || 0)
-    }
-
-    fetchUnreadCount()
-
-    const subscription = supabase
-      .channel(`public:notifications:homepage_${Math.random().toString(36).substring(7)}`)
-      .on('postgres_changes', { 
-        event: 'INSERT', 
-        schema: 'public', 
-        table: 'notifications',
-        filter: `user_id=eq.${profile.id}`
-      }, () => {
-        setUnreadCount(prev => prev + 1)
-      })
-      .subscribe()
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [profile])
-
   const firstName = profile?.full_name?.split(' ')[0] || 'Guest'
 
   return (
     <div className="flex flex-col min-h-screen bg-surface relative pb-20">
       {/* Greeting */}
       <header className="bg-white dark:bg-slate-900 px-5 pt-4 pb-3 flex items-center justify-between transition-colors">
-          <div>
+          <div className="flex items-baseline gap-2">
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Welcome back,</p>
-            <h1 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
-              {firstName} <span className="text-xl">👋</span>
+            <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
+              {firstName} <span className="text-lg">👋</span>
             </h1>
           </div>
-          <button 
-            onClick={() => navigate('/notifications')}
-            className="relative p-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-full active:scale-95 transition-colors"
-          >
-            <Bell size={20} />
-            {unreadCount > 0 && (
-              <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-white"></span>
-            )}
-          </button>
       </header>
 
       {/* Filter Bar: type pills + category dropdown on one line */}
