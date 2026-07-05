@@ -10,6 +10,7 @@ import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import { CustodyPicker } from '../components/items/CustodyPicker'
 import type { HolderType } from '../types/supabase'
+import imageCompression from 'browser-image-compression'
 
 export function ReportPage() {
   const navigate = useNavigate()
@@ -83,13 +84,21 @@ export function ReportPage() {
 
       // Upload photo if selected
       if (photo) {
-        const ext = photo.name.split('.').pop()
+        // Compress the image before uploading
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1280,
+          useWebWorker: true,
+        }
+        
+        const compressedFile = await imageCompression(photo, options)
+        const ext = photo.name.split('.').pop() || 'jpeg'
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`
         const filePath = `${profile.institution_id}/${fileName}`
 
         const { error: uploadError } = await supabase.storage
           .from('item_images')
-          .upload(filePath, photo)
+          .upload(filePath, compressedFile)
 
         if (uploadError) throw uploadError
 
