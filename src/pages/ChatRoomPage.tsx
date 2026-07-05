@@ -130,18 +130,7 @@ export function ChatRoomPage() {
         throw error
       }
       
-      // Notify the other user
-      if (otherUser) {
-        supabase.from('notifications').insert({
-          user_id: otherUser.id,
-          type: 'new_message',
-          title: 'New Message',
-          message: `New message from ${profile?.full_name || 'Someone'}`,
-          related_entity_id: id,
-          related_entity_type: 'chat_room'
-        }).then()
-      }
-      
+      // Notification is handled by the DB trigger (notify_on_new_message)
       // Realtime subscription will handle adding it to the list
     } catch (err) {
       console.error('Failed to send message', err)
