@@ -1,13 +1,59 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bell, Shield, Moon, Sun } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext'
+import { useAuth } from '../contexts/AuthContext'
+import { isCurrentlySubscribed, requestPushSubscription, removePushSubscription, isPushSupported } from '../services/pushNotifications'
+import toast from 'react-hot-toast'
 
 export function SettingsPage() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const { profile } = useAuth()
+
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false)
+  const [pushSupported, setPushSupported] = useState(true)
+  const [isLoadingPush, setIsLoadingPush] = useState(true)
   const [privacyEnabled, setPrivacyEnabled] = useState(false)
+
+  useEffect(() => {
+    async function checkPush() {
+      const supported = await isPushSupported()
+      setPushSupported(supported)
+      if (supported) {
+        const subscribed = await isCurrentlySubscribed()
+        setNotificationsEnabled(subscribed)
+      }
+      setIsLoadingPush(false)
+    }
+    checkPush()
+  }, [])
+
+  const handleToggleNotifications = async () => {
+    if (!profile) {
+      toast.error('You must be logged in to manage notifications.')
+      return
+    }
+
+    if (notificationsEnabled) {
+      setNotificationsEnabled(false)
+      const res = await removePushSubscription(profile.id)
+      if (!res.success) {
+        setNotificationsEnabled(true)
+        toast.error(res.message)
+      } else {
+        toast.success(res.message)
+      }
+    } else {
+      const res = await requestPushSubscription(profile.id)
+      if (res.success) {
+        setNotificationsEnabled(true)
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
+    }
+  }
 
   const SettingRow = ({ icon: Icon, title, description, isActive, onClick }: any) => (
     <div 
@@ -40,13 +86,15 @@ export function SettingsPage() {
 
       <div className="p-4">
         <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider transition-colors">Preferences</h2>
-        <SettingRow 
-          icon={Bell} 
-          title="Notifications" 
-          description="Push alerts for your items" 
-          isActive={notificationsEnabled}
-          onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-        />
+        {pushSupported && !isLoadingPush && (
+          <SettingRow 
+            icon={Bell} 
+            title="Notifications" 
+            description="Push alerts for your items" 
+            isActive={notificationsEnabled}
+            onClick={handleToggleNotifications}
+          />
+        )}
         <SettingRow 
           icon={theme === 'dark' ? Moon : Sun} 
           title="Dark Mode" 
