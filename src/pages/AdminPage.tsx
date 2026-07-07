@@ -12,6 +12,7 @@ import { ApprovalsTab } from '../components/admin/ApprovalsTab'
 import { UsersTab } from '../components/admin/UsersTab'
 import { ItemsTab } from '../components/admin/ItemsTab'
 import { ClaimsTab } from '../components/admin/ClaimsTab'
+import logoLight from '../assets/logo_light.png'
 
 type TabType = 'overview' | 'approvals' | 'users' | 'items' | 'claims'
 
@@ -38,14 +39,9 @@ export function AdminPage() {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-6 py-6 border-b border-slate-700/50">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
-            <ShieldCheck size={18} className="text-white" />
-          </div>
-          <div>
-            <p className="text-white font-bold text-sm leading-tight">Admin Portal</p>
-            <p className="text-slate-400 text-xs">UENR Lost & Found</p>
-          </div>
+        <div className="flex flex-col items-start gap-3">
+          <img src={logoLight} alt="Lost & Found" className="h-7" />
+          <p className="text-primary-400 font-bold text-[10px] leading-tight tracking-widest uppercase">Admin Portal</p>
         </div>
       </div>
 

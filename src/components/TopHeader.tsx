@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { PackageSearch, LogIn, User as UserIcon, Bell } from 'lucide-react'
+import { LogIn, User as UserIcon, Bell } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
+import logoLight from '../assets/logo_light.png'
+import logoDark from '../assets/logo_dark.png'
 
 export function TopHeader() {
   const navigate = useNavigate()
@@ -43,13 +45,9 @@ export function TopHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 px-4 h-14 flex items-center justify-between transition-colors">
-      <Link to="/" className="flex items-center gap-2 group">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white shadow-sm shadow-primary-500/20 group-hover:scale-105 transition-transform">
-          <PackageSearch size={18} strokeWidth={2.5} />
-        </div>
-        <span className="font-bold text-[15px] tracking-tight text-slate-900 dark:text-white transition-colors">
-          Lost & Found
-        </span>
+      <Link to="/" className="flex items-center group">
+        <img src={logoLight} alt="Lost & Found" className="h-6 dark:hidden transition-transform group-hover:scale-105" />
+        <img src={logoDark} alt="Lost & Found" className="h-6 hidden dark:block transition-transform group-hover:scale-105" />
       </Link>
 
       {!loading && (

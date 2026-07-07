@@ -4,6 +4,8 @@ import { cn } from '../../lib/utils'
 import { useAuth } from '../../contexts/AuthContext'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import logoLight from '../../assets/logo_light.png'
+import logoDark from '../../assets/logo_dark.png'
 
 export function DesktopSidebar() {
   const { user, signOut } = useAuth()
@@ -55,13 +57,9 @@ export function DesktopSidebar() {
   return (
     <div className="w-full h-full flex flex-col pt-8 pb-6 px-4">
       {/* Logo */}
-      <div className="px-4 mb-10 flex items-center gap-3">
-        <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-          <Search size={24} className="text-white" />
-        </div>
-        <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-          Lost & Found
-        </h1>
+      <div className="px-4 mb-10 flex items-center">
+        <img src={logoLight} alt="Lost & Found" className="h-8 dark:hidden" />
+        <img src={logoDark} alt="Lost & Found" className="h-8 hidden dark:block" />
       </div>
 
       {/* Nav Links */}
