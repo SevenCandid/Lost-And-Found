@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ChevronLeft, Send, Package } from 'lucide-react'
+import { ChevronLeft, Send, Package, Check, CheckCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Database } from '../lib/database.types'
@@ -38,7 +38,22 @@ export function ChatRoomPage() {
         table: 'messages',
         filter: `room_id=eq.${id}`
       }, (payload) => {
-        setMessages(prev => [...prev, payload.new as Message])
+        const newMsg = payload.new as Message
+        setMessages(prev => [...prev, newMsg])
+        
+        // If the new message is from the other user, mark it as read immediately
+        if (newMsg.sender_id !== user.id) {
+          supabase.from('messages').update({ is_read: true }).eq('id', newMsg.id).then()
+        }
+      })
+      .on('postgres_changes', { 
+        event: 'UPDATE', 
+        schema: 'public', 
+        table: 'messages',
+        filter: `room_id=eq.${id}`
+      }, (payload) => {
+        const updatedMsg = payload.new as Message
+        setMessages(prev => prev.map(msg => msg.id === updatedMsg.id ? updatedMsg : msg))
       })
       .subscribe()
 
@@ -92,6 +107,18 @@ export function ChatRoomPage() {
       
       if (messagesData) {
         setMessages(messagesData)
+
+        // Mark all unread messages from the other user as read
+        const unreadFromOther = messagesData.filter(m => !m.is_read && m.sender_id !== user!.id)
+        if (unreadFromOther.length > 0) {
+          supabase
+            .from('messages')
+            .update({ is_read: true })
+            .eq('room_id', id)
+            .eq('is_read', false)
+            .neq('sender_id', user!.id)
+            .then()
+        }
       }
       
       // Mark message notifications as read for this room
@@ -196,11 +223,22 @@ export function ChatRoomPage() {
               >
                 {msg.content}
               </div>
-              {showTime && (
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">
-                  {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              )}
+              <div className="flex items-center gap-1 mt-1 px-1">
+                {showTime && (
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+                {isMine && (
+                  <span className="text-[14px]">
+                    {msg.is_read ? (
+                      <CheckCheck size={14} className="text-blue-500 dark:text-blue-400" />
+                    ) : (
+                      <Check size={14} className="text-slate-400 dark:text-slate-500" />
+                    )}
+                  </span>
+                )}
+              </div>
             </div>
           )
         })}
