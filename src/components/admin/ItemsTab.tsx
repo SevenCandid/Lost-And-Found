@@ -135,13 +135,13 @@ export function ItemsTab() {
                   <h3 className="font-bold text-slate-800 dark:text-white truncate leading-tight transition-colors">{item.title}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5 transition-colors">{item.location} • {formatDistanceToNow(new Date(item.created_at))} ago</p>
                   <div className="mt-1.5 flex items-center gap-2">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                      item.type === 'lost' ? 'bg-danger-50 text-danger-600' : 'bg-primary-50 text-primary-600'
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider transition-colors ${
+                      item.type === 'lost' ? 'bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-danger-400' : 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400'
                     }`}>
                       {item.type}
                     </span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                      item.status === 'active' ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300' : 'bg-emerald-50 text-emerald-600'
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider transition-colors ${
+                      item.status === 'active' ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                     }`}>
                       {item.status}
                     </span>
@@ -153,7 +153,7 @@ export function ItemsTab() {
                 {item.status === 'active' && (
                   <button 
                     onClick={() => handleResolve(item.id)}
-                    className="w-8 h-8 rounded-full bg-slate-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-50 transition-all"
+                    className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700/50 text-emerald-500 dark:text-emerald-400 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-all"
                     title="Mark as Resolved"
                   >
                     <CheckCircle size={16} />
@@ -161,7 +161,7 @@ export function ItemsTab() {
                 )}
                 <button 
                   onClick={() => handleDelete(item.id)}
-                  className="w-8 h-8 rounded-full bg-slate-50 text-danger-500 flex items-center justify-center hover:bg-danger-50 transition-all"
+                  className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700/50 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-all"
                   title="Delete Item"
                 >
                   <Trash2 size={16} />

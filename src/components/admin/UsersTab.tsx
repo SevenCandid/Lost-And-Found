@@ -90,15 +90,15 @@ export function UsersTab() {
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate transition-colors">{user.index_number} • {user.department}</p>
                 <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5 transition-colors">{user.email}</p>
                 <div className="mt-1 flex items-center gap-2">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                    user.verification_status === 'verified' ? 'bg-emerald-50 text-emerald-600' :
-                    user.verification_status === 'pending' ? 'bg-amber-50 text-amber-600' :
-                    'bg-red-50 text-red-600'
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider transition-colors ${
+                    user.verification_status === 'verified' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' :
+                    user.verification_status === 'pending' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+                    'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
                   }`}>
                     {user.verification_status}
                   </span>
                   {user.role === 'admin' && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-purple-50 text-purple-600">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 transition-colors">
                       ADMIN
                     </span>
                   )}
@@ -110,8 +110,8 @@ export function UsersTab() {
               onClick={() => toggleVerification(user.id, user.verification_status)}
               className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-all ${
                 user.verification_status === 'verified' 
-                  ? 'bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500' 
-                  : 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100'
+                  ? 'bg-slate-50 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-400' 
+                  : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20'
               }`}
               title={user.verification_status === 'verified' ? "Revoke Verification" : "Verify User"}
             >

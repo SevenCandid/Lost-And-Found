@@ -44,8 +44,20 @@ export default function App() {
           }
         }}
       />
-      <DesktopLayoutWrapper>
-        <Routes>
+      <Routes>
+        {/* Admin Routes - Standalone Layout */}
+        <Route path="/admin/auth" element={<AdminAuthPage />} />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Public/App Routes - Desktop Wrapped */}
+        <Route element={<DesktopLayoutWrapper />}>
           <Route path="/splash" element={<SplashPage />} />
           <Route path="/welcome" element={<WelcomePage />} />
           
@@ -104,25 +116,16 @@ export default function App() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminPage />
-              </ProtectedRoute>
-            } 
-          />
-          
           {/* Info Pages */}
           <Route path="/about" element={<AboutPage />} />
           <Route path="/help" element={<HelpCenterPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
-          
+
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </DesktopLayoutWrapper>
+        </Route>
+      </Routes>
     </BrowserRouter>
   )
 }

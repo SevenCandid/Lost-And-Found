@@ -85,14 +85,14 @@ export function ApprovalsTab() {
               <button 
                 title="Reject" 
                 onClick={() => handleAction(user.id, 'rejected')}
-                className="w-10 h-10 rounded-full bg-danger-50 text-danger-500 flex items-center justify-center hover:bg-danger-100 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-danger-50 dark:bg-danger-500/10 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-100 dark:hover:bg-danger-500/20 active:scale-95 transition-all"
               >
                 <X size={20} />
               </button>
               <button 
                 title="Approve" 
                 onClick={() => handleAction(user.id, 'verified')}
-                className="w-10 h-10 rounded-full bg-success-50 text-success-500 flex items-center justify-center hover:bg-success-100 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-success-50 dark:bg-success-500/10 text-success-500 dark:text-success-400 flex items-center justify-center hover:bg-success-100 dark:hover:bg-success-500/20 active:scale-95 transition-all"
               >
                 <Check size={20} />
               </button>

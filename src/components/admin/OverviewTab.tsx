@@ -99,8 +99,8 @@ export function OverviewTab() {
       {/* Charts Section (Moved to top) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Timeline Chart */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
-          <h3 className="text-base font-bold text-slate-800 mb-4">Reports Over Last 7 Days</h3>
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-colors">
+          <h3 className="text-base font-bold text-slate-800 dark:text-white mb-4 transition-colors">Reports Over Last 7 Days</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={timelineData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -119,8 +119,8 @@ export function OverviewTab() {
         </div>
 
         {/* Category Pie Chart */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
-          <h3 className="text-base font-bold text-slate-800 mb-4">Top Categories</h3>
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-colors">
+          <h3 className="text-base font-bold text-slate-800 dark:text-white mb-4 transition-colors">Top Categories</h3>
           <div className="h-64">
             {categoryData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -156,39 +156,39 @@ export function OverviewTab() {
       {/* Summary Cards (Compact, bottom) */}
       <div className="grid grid-cols-4 gap-2 md:gap-3">
         {/* Pending Approvals Metric */}
-        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+        <div className="bg-white dark:bg-slate-900 p-2 md:p-3 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center transition-colors">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-amber-50 dark:bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2 transition-colors">
             <ShieldAlert size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
           </div>
-          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.pendingApprovals}</h3>
-          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Pending</p>
+          <h3 className="text-base md:text-lg font-bold text-slate-800 dark:text-white transition-colors">{stats.pendingApprovals}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 dark:text-slate-400 leading-tight mt-0.5 md:mt-1 transition-colors">Pending</p>
         </div>
 
         {/* Users Metric */}
-        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+        <div className="bg-white dark:bg-slate-900 p-2 md:p-3 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center transition-colors">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center mb-1.5 md:mb-2 transition-colors">
             <Users size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
           </div>
-          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.totalUsers}</h3>
-          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Users</p>
+          <h3 className="text-base md:text-lg font-bold text-slate-800 dark:text-white transition-colors">{stats.totalUsers}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 dark:text-slate-400 leading-tight mt-0.5 md:mt-1 transition-colors">Users</p>
         </div>
 
         {/* Active Items Metric */}
-        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+        <div className="bg-white dark:bg-slate-900 p-2 md:p-3 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center transition-colors">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-sky-50 dark:bg-sky-500/10 text-sky-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2 transition-colors">
             <PackageSearch size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
           </div>
-          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.activeItems}</h3>
-          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Active</p>
+          <h3 className="text-base md:text-lg font-bold text-slate-800 dark:text-white transition-colors">{stats.activeItems}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 dark:text-slate-400 leading-tight mt-0.5 md:mt-1 transition-colors">Active</p>
         </div>
 
         {/* Resolved Items Metric */}
-        <div className="bg-white p-2 md:p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center">
-          <div className="w-6 h-6 md:w-8 md:h-8 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2">
+        <div className="bg-white dark:bg-slate-900 p-2 md:p-3 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center transition-colors">
+          <div className="w-6 h-6 md:w-8 md:h-8 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mb-1.5 md:mb-2 transition-colors">
             <CheckCircle size={14} className="md:w-4 md:h-4 w-3.5 h-3.5" />
           </div>
-          <h3 className="text-base md:text-lg font-bold text-slate-800">{stats.resolvedItems}</h3>
-          <p className="text-[9px] md:text-xs font-medium text-slate-500 leading-tight mt-0.5 md:mt-1">Resolved</p>
+          <h3 className="text-base md:text-lg font-bold text-slate-800 dark:text-white transition-colors">{stats.resolvedItems}</h3>
+          <p className="text-[9px] md:text-xs font-medium text-slate-500 dark:text-slate-400 leading-tight mt-0.5 md:mt-1 transition-colors">Resolved</p>
         </div>
       </div>
 

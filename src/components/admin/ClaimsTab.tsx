@@ -104,14 +104,14 @@ export function ClaimsTab() {
             <div className="flex gap-2">
               <button 
                 onClick={() => handleClaim(claim.id, claim.item_id, 'rejected')}
-                className="w-10 h-10 rounded-full bg-danger-50 text-danger-500 flex items-center justify-center hover:bg-danger-100 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-danger-50 dark:bg-danger-500/10 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-100 dark:hover:bg-danger-500/20 active:scale-95 transition-all"
                 title="Reject Claim"
               >
                 <XCircle size={20} />
               </button>
               <button 
                 onClick={() => handleClaim(claim.id, claim.item_id, 'approved')}
-                className="w-10 h-10 rounded-full bg-success-50 text-success-500 flex items-center justify-center hover:bg-success-100 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-success-50 dark:bg-success-500/10 text-success-500 dark:text-success-400 flex items-center justify-center hover:bg-success-100 dark:hover:bg-success-500/20 active:scale-95 transition-all"
                 title="Approve Claim"
               >
                 <CheckCircle size={20} />
