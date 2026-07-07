@@ -54,15 +54,33 @@ export async function requestPushSubscription(userId: string): Promise<{ success
       return { success: false, message: 'Failed to retrieve subscription keys.' }
     }
 
-    // Save subscription to Supabase
-    const { error } = await supabase
+    // Check if subscription exists
+    const { data: existing } = await supabase
       .from('push_subscriptions')
-      .upsert({
-        user_id: userId,
-        endpoint: subscription.endpoint,
-        p256dh,
-        auth,
-      }, { onConflict: 'push_subscriptions_user_id_endpoint_key' })
+      .select('id')
+      .eq('user_id', userId)
+      .eq('endpoint', subscription.endpoint)
+      .maybeSingle()
+
+    let error;
+
+    if (existing) {
+      const { error: updateError } = await supabase
+        .from('push_subscriptions')
+        .update({ p256dh, auth })
+        .eq('id', existing.id)
+      error = updateError
+    } else {
+      const { error: insertError } = await supabase
+        .from('push_subscriptions')
+        .insert({
+          user_id: userId,
+          endpoint: subscription.endpoint,
+          p256dh,
+          auth,
+        })
+      error = insertError
+    }
 
     if (error) {
       console.error('Error saving push subscription:', error)
