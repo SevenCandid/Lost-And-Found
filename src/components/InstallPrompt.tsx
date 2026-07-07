@@ -100,6 +100,8 @@ export function InstallPrompt() {
         </div>
         <button
           onClick={handleDismiss}
+          title="Dismiss"
+          aria-label="Dismiss"
           className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
         >
           <X size={16} />

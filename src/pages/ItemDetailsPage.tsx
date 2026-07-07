@@ -155,7 +155,7 @@ export function ItemDetailsPage() {
     try {
       // If there's an image, attempt to attach it directly to the share payload
       if (item.image_url) {
-        const response = await fetch(item.image_url)
+        const response = await fetch(item.image_url as string)
         const blob = await response.blob()
         const file = new File([blob], `item-${item.id}.jpg`, { type: blob.type })
         
