@@ -146,10 +146,26 @@ export function ItemDetailsPage() {
     if (!item) return
     
     const isLostItem = item.type === 'lost'
-    const shareData = {
+    const shareData: ShareData = {
       title: `${isLostItem ? 'Lost' : 'Found'}: ${item.title}`,
       text: `Check out this ${isLostItem ? 'lost' : 'found'} item on Veroseven Lost & Found!`,
       url: window.location.href
+    }
+
+    try {
+      // If there's an image, attempt to attach it directly to the share payload
+      if (item.image_url) {
+        const response = await fetch(item.image_url)
+        const blob = await response.blob()
+        const file = new File([blob], `item-${item.id}.jpg`, { type: blob.type })
+        
+        // Check if browser supports sharing files
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          shareData.files = [file]
+        }
+      }
+    } catch (err) {
+      console.warn("Could not attach image to share payload", err)
     }
 
     if (navigator.share) {
