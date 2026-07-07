@@ -152,22 +152,6 @@ export function ItemDetailsPage() {
       url: window.location.href
     }
 
-    try {
-      // If there's an image, attempt to attach it directly to the share payload
-      if (item.image_url) {
-        const response = await fetch(item.image_url as string)
-        const blob = await response.blob()
-        const file = new File([blob], `item-${item.id}.jpg`, { type: blob.type })
-        
-        // Check if browser supports sharing files
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          shareData.files = [file]
-        }
-      }
-    } catch (err) {
-      console.warn("Could not attach image to share payload", err)
-    }
-
     if (navigator.share) {
       try {
         await navigator.share(shareData)

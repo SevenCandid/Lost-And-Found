@@ -60,6 +60,10 @@ export default defineConfig({
         swSrc: 'src/sw.ts',
         swDest: 'dist/sw.js',
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}']
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module'
       }
     })
   ],
