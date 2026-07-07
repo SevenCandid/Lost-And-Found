@@ -23,6 +23,12 @@ import { RegisterPage } from './pages/auth/RegisterPage'
 import { PendingVerificationPage } from './pages/auth/PendingVerificationPage'
 import { AdminAuthPage } from './pages/auth/AdminAuthPage'
 
+// Info Pages
+import { AboutPage } from './pages/info/AboutPage'
+import { HelpCenterPage } from './pages/info/HelpCenterPage'
+import { PrivacyPolicyPage } from './pages/info/PrivacyPolicyPage'
+import { TermsOfServicePage } from './pages/info/TermsOfServicePage'
+
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 export default function App() {
@@ -106,6 +112,12 @@ export default function App() {
               </ProtectedRoute>
             } 
           />
+          
+          {/* Info Pages */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/help" element={<HelpCenterPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
           
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

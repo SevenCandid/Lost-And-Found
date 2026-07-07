@@ -1,4 +1,5 @@
 import { Info, HelpCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export function DesktopRightPanel() {
   return (
@@ -19,11 +20,15 @@ export function DesktopRightPanel() {
       </div>
       
       <div className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400 font-medium px-2">
-        <a href="#" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">About</a>
-        <a href="#" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Help Center</a>
-        <a href="#" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Privacy Policy</a>
-        <a href="#" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Terms of Service</a>
-        <span className="w-full mt-2">© 2024 Lost & Found</span>
+        <Link to="/about" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">About</Link>
+        <Link to="/help" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Help Center</Link>
+        <Link to="/privacy" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Privacy Policy</Link>
+        <Link to="/terms" className="hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Terms of Service</Link>
+        <div className="w-full mt-4 text-[11px] text-slate-400/80">
+          © 2026 Lost & Found
+          <br/>
+          <span className="font-semibold text-slate-400">Powered by Veroseven</span>
+        </div>
       </div>
     </div>
   )
