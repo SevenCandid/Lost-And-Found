@@ -158,7 +158,7 @@ export function ItemDetailsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface pb-24">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 flex justify-between p-4 pt-safe max-w-md mx-auto pointer-events-none">
+      <header className="absolute top-0 left-0 right-0 z-40 flex justify-between p-4 pt-safe pointer-events-none">
         <button 
           onClick={() => navigate(-1)}
           title="Go back"
@@ -249,7 +249,7 @@ export function ItemDetailsPage() {
 
       {/* Sticky Bottom Action for Non-Reporter */}
       {item.status === 'active' && !isReporter && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe max-w-md mx-auto z-30 flex gap-3 transition-colors">
+        <div className="sticky bottom-0 left-0 right-0 mt-auto p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe z-30 flex gap-3 transition-colors">
           <Button 
             variant="outline" 
             className="flex-1 bg-white" 
@@ -303,7 +303,7 @@ export function ItemDetailsPage() {
 
       {/* Sticky Bottom Action for Reporter */}
       {isReporter && item.type === 'found' && !['returned', 'closed'].includes(item.status) && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe max-w-md mx-auto z-30 transition-colors">
+        <div className="sticky bottom-0 left-0 right-0 mt-auto p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe z-30 transition-colors">
           <Button 
             fullWidth 
             onClick={handleMarkReturned}

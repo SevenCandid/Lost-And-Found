@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { MainLayout } from './layouts/MainLayout'
+import { DesktopLayoutWrapper } from './layouts/DesktopLayoutWrapper'
 
 // Pages
 import { SplashPage } from './pages/SplashPage'
@@ -37,77 +38,79 @@ export default function App() {
           }
         }}
       />
-      <Routes>
-        <Route path="/splash" element={<SplashPage />} />
-        <Route path="/welcome" element={<WelcomePage />} />
-        
-        {/* Auth Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/pending" element={<PendingVerificationPage />} />
-        <Route path="/admin/auth" element={<AdminAuthPage />} />
-        
-        {/* Main app layout with bottom navigation */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<SearchPage />} />
+      <DesktopLayoutWrapper>
+        <Routes>
+          <Route path="/splash" element={<SplashPage />} />
+          <Route path="/welcome" element={<WelcomePage />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/pending" element={<PendingVerificationPage />} />
+          <Route path="/admin/auth" element={<AdminAuthPage />} />
+          
+          {/* Main app layout with bottom navigation */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route 
+              path="/report" 
+              element={
+                <ProtectedRoute requireVerified>
+                  <ReportPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/messages" 
+              element={
+                <ProtectedRoute>
+                  <ChatListPage />
+                </ProtectedRoute>
+              } 
+            />
+          </Route>
+          
+          {/* Detail pages without bottom navigation */}
+          <Route path="/item/:id" element={<ItemDetailsPage />} />
           <Route 
-            path="/report" 
-            element={
-              <ProtectedRoute requireVerified>
-                <ReportPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/profile" 
+            path="/chat/:id" 
             element={
               <ProtectedRoute>
-                <ProfilePage />
+                <ChatRoomPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route 
+            path="/notifications" 
+            element={
+              <ProtectedRoute>
+                <NotificationsPage />
               </ProtectedRoute>
             } 
           />
           <Route 
-            path="/messages" 
+            path="/admin" 
             element={
-              <ProtectedRoute>
-                <ChatListPage />
+              <ProtectedRoute requireAdmin>
+                <AdminPage />
               </ProtectedRoute>
             } 
           />
-        </Route>
-        
-        {/* Detail pages without bottom navigation */}
-        <Route path="/item/:id" element={<ItemDetailsPage />} />
-        <Route 
-          path="/chat/:id" 
-          element={
-            <ProtectedRoute>
-              <ChatRoomPage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route 
-          path="/notifications" 
-          element={
-            <ProtectedRoute>
-              <NotificationsPage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/admin" 
-          element={
-            <ProtectedRoute requireAdmin>
-              <AdminPage />
-            </ProtectedRoute>
-          } 
-        />
-        
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </DesktopLayoutWrapper>
     </BrowserRouter>
   )
 }
