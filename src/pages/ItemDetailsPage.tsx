@@ -188,9 +188,12 @@ export function ItemDetailsPage() {
   const executeMarkReturned = async () => {
     if (!item) return
     setIsSubmitting(true)
+    
+    const newStatus = item.type === 'found' ? 'returned' : 'resolved';
+    
     const { error } = await supabase
       .from('items')
-      .update({ status: 'returned', returned_at: new Date().toISOString() })
+      .update({ status: newStatus as any, returned_at: new Date().toISOString() })
       .eq('id', item.id)
 
     setIsSubmitting(false)
@@ -201,8 +204,8 @@ export function ItemDetailsPage() {
       return
     }
 
-    toast.success('Item marked as returned!')
-    setItem({ ...item, status: 'returned', returned_at: new Date().toISOString() })
+    toast.success(item.type === 'found' ? 'Item marked as returned!' : 'Item marked as recovered!')
+    setItem({ ...item, status: newStatus as any, returned_at: new Date().toISOString() })
   }
 
   const handleShare = async () => {
@@ -365,14 +368,14 @@ export function ItemDetailsPage() {
       )}
 
       {/* Sticky Bottom Action for Reporter */}
-      {isReporter && item.type === 'found' && !['returned', 'closed'].includes(item.status) && (
+      {isReporter && !['returned', 'closed', 'resolved'].includes(item.status) && (
         <div className="sticky bottom-0 left-0 right-0 mt-auto p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe z-30 transition-colors">
           <Button 
             fullWidth 
             onClick={handleMarkReturnedClick}
             isLoading={isSubmitting}
           >
-            Mark as Returned to Owner
+            {item.type === 'found' ? 'Mark as Returned to Owner' : 'Mark as Recovered'}
           </Button>
         </div>
       )}
@@ -403,9 +406,9 @@ export function ItemDetailsPage() {
         onClose={() => setIsReturnConfirmOpen(false)}
         onConfirm={executeMarkReturned}
         isLoading={isSubmitting}
-        title="Mark as Returned?"
-        description="Are you sure you want to mark this item as returned? This action cannot be undone."
-        confirmText="Mark as Returned"
+        title={item?.type === 'found' ? "Mark as Returned?" : "Mark as Recovered?"}
+        description={item?.type === 'found' ? "Are you sure you want to mark this item as returned? This action cannot be undone." : "Are you sure you want to mark this item as recovered? This will close the listing."}
+        confirmText={item?.type === 'found' ? "Mark as Returned" : "Mark as Recovered"}
       />
     </div>
   )
