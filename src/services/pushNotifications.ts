@@ -16,6 +16,18 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray
 }
 
+// Safely await service worker ready with a timeout (fixes dev mode hangs)
+async function getReadyServiceWorker(timeoutMs = 5000): Promise<ServiceWorkerRegistration> {
+  if (!('serviceWorker' in navigator)) throw new Error('Service Worker not supported');
+  
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<ServiceWorkerRegistration>((_, reject) => 
+      setTimeout(() => reject(new Error('Service worker ready timeout')), timeoutMs)
+    )
+  ]);
+}
+
 export async function isPushSupported(): Promise<boolean> {
   return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
 }
@@ -38,7 +50,7 @@ export async function requestPushSubscription(userId: string): Promise<{ success
 
   try {
     // Get service worker registration
-    const registration = await navigator.serviceWorker.ready
+    const registration = await getReadyServiceWorker()
 
     // Subscribe to push
     const subscription = await registration.pushManager.subscribe({
@@ -96,7 +108,7 @@ export async function requestPushSubscription(userId: string): Promise<{ success
 
 export async function removePushSubscription(userId: string): Promise<{ success: boolean; message: string }> {
   try {
-    const registration = await navigator.serviceWorker.ready
+    const registration = await getReadyServiceWorker()
     const subscription = await registration.pushManager.getSubscription()
 
     if (subscription) {
@@ -121,7 +133,7 @@ export async function removePushSubscription(userId: string): Promise<{ success:
 export async function isCurrentlySubscribed(): Promise<boolean> {
   try {
     if (!(await isPushSupported())) return false
-    const registration = await navigator.serviceWorker.ready
+    const registration = await getReadyServiceWorker(3000)
     const subscription = await registration.pushManager.getSubscription()
     return subscription !== null && Notification.permission === 'granted'
   } catch {

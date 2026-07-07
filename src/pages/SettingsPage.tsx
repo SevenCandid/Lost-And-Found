@@ -86,15 +86,16 @@ export function SettingsPage() {
 
       <div className="p-4">
         <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider transition-colors">Preferences</h2>
-        {pushSupported && !isLoadingPush && (
-          <SettingRow 
-            icon={Bell} 
-            title="Notifications" 
-            description="Push alerts for your items" 
-            isActive={notificationsEnabled}
-            onClick={handleToggleNotifications}
-          />
-        )}
+        <SettingRow 
+          icon={Bell} 
+          title="Notifications" 
+          description={pushSupported ? (isLoadingPush ? "Checking status..." : "Push alerts for your items") : "Not supported on this device"}
+          isActive={notificationsEnabled}
+          onClick={pushSupported && !isLoadingPush ? handleToggleNotifications : () => {
+            if (!pushSupported) toast.error("Push notifications are not supported on this device/browser.")
+            else toast.loading("Checking push status, please wait...", { id: 'push_check', duration: 2000 })
+          }}
+        />
         <SettingRow 
           icon={theme === 'dark' ? Moon : Sun} 
           title="Dark Mode" 
