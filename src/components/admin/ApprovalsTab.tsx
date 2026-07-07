@@ -6,7 +6,9 @@ import toast from 'react-hot-toast'
 import { Database } from '../../lib/database.types'
 
 type Profile = Database['public']['Tables']['users']['Row']
-type Institution = Database['public']['Tables']['institutions']['Row']
+type Institution = Database['public']['Tables']['institutions']['Row'] & {
+  require_admin_approval: boolean
+}
 
 export function ApprovalsTab() {
   const [pendingUsers, setPendingUsers] = useState<Profile[]>([])
@@ -215,7 +217,8 @@ export function ApprovalsTab() {
             </div>
           )}
         </div>
-        </div>
+      ))}
+      </div>
       )}
     </div>
   )
