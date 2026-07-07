@@ -142,6 +142,32 @@ export function ItemDetailsPage() {
     setItem({ ...item, status: 'returned', returned_at: new Date().toISOString() })
   }
 
+  const handleShare = async () => {
+    if (!item) return
+    
+    const isLostItem = item.type === 'lost'
+    const shareData = {
+      title: `${isLostItem ? 'Lost' : 'Found'}: ${item.title}`,
+      text: `Check out this ${isLostItem ? 'lost' : 'found'} item on Veroseven Lost & Found!`,
+      url: window.location.href
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        // User probably cancelled share, no need to show error
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareData.url)
+        toast.success('Link copied to clipboard!')
+      } catch (err) {
+        toast.error('Failed to copy link')
+      }
+    }
+  }
+
   if (isLoading || !item) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center pt-safe">
@@ -166,7 +192,11 @@ export function ItemDetailsPage() {
         >
           <ChevronLeft size={24} />
         </button>
-        <button title="Share" className="w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 dark:text-white pointer-events-auto active:scale-95 transition-transform">
+        <button 
+          onClick={handleShare}
+          title="Share" 
+          className="w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-800 dark:text-white pointer-events-auto active:scale-95 transition-transform"
+        >
           <Share2 size={20} />
         </button>
       </header>

@@ -30,6 +30,7 @@ import { PrivacyPolicyPage } from './pages/info/PrivacyPolicyPage'
 import { TermsOfServicePage } from './pages/info/TermsOfServicePage'
 
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { InstallPrompt } from './components/InstallPrompt'
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
           }
         }}
       />
+      <InstallPrompt />
       <Routes>
         {/* Admin Routes - Standalone Layout */}
         <Route path="/admin/auth" element={<AdminAuthPage />} />

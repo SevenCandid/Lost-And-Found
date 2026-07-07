@@ -1,11 +1,61 @@
 /// <reference lib="webworker" />
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+import { cleanupOutdatedCaches, precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
+import { registerRoute, NavigationRoute } from 'workbox-routing'
+import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
+import { ExpirationPlugin } from 'workbox-expiration'
+import { CacheableResponsePlugin } from 'workbox-cacheable-response'
 
 declare let self: ServiceWorkerGlobalScope
 
 // Precache all assets injected by Vite PWA
 precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
+
+// ─── Routing & Runtime Caching ───────────────────────────────────────────────
+
+// 1. Handle Navigation Requests (Offline SPA support)
+// This ensures that if the user reloads a route like /messages offline, 
+// the Service Worker serves the index.html shell.
+try {
+  const handler = createHandlerBoundToURL('/index.html')
+  const navigationRoute = new NavigationRoute(handler, {
+    denylist: [/^\/admin/, /^\/api/], // Don't serve app shell for admin or API routes if any
+  })
+  registerRoute(navigationRoute)
+} catch (error) {
+  console.warn('Navigation fallback could not be registered', error)
+}
+
+// 2. Cache Images (Supabase uploads, avatars, etc.)
+// Uses CacheFirst since uploaded item images generally don't change.
+registerRoute(
+  ({ request, url }) => request.destination === 'image' || url.pathname.match(/\.(?:png|jpg|jpeg|svg|webp|gif)$/),
+  new CacheFirst({
+    cacheName: 'images-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+      }),
+    ],
+  })
+)
+
+// 3. Cache API/Supabase Requests (Optional enhancement for feed)
+registerRoute(
+  ({ url }) => url.href.includes('supabase.co/rest/v1/'),
+  new StaleWhileRevalidate({
+    cacheName: 'api-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+    ],
+  })
+)
 
 // ─── Push Event ──────────────────────────────────────────────────────────────
 self.addEventListener('push', (event) => {

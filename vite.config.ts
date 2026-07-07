@@ -31,6 +31,29 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png'
           }
+        ],
+        shortcuts: [
+          {
+            name: 'Report Lost Item',
+            short_name: 'Lost',
+            description: 'Report an item you lost',
+            url: '/report?type=lost',
+            icons: [{ src: '/icon-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Report Found Item',
+            short_name: 'Found',
+            description: 'Report an item you found',
+            url: '/report?type=found',
+            icons: [{ src: '/icon-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Messages',
+            short_name: 'Messages',
+            description: 'View your conversations',
+            url: '/messages',
+            icons: [{ src: '/icon-192x192.png', sizes: '192x192' }]
+          }
         ]
       },
       injectManifest: {
