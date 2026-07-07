@@ -18,13 +18,18 @@ export function SettingsPage() {
 
   useEffect(() => {
     async function checkPush() {
-      const supported = await isPushSupported()
-      setPushSupported(supported)
-      if (supported) {
-        const subscribed = await isCurrentlySubscribed()
-        setNotificationsEnabled(subscribed)
+      try {
+        const supported = await isPushSupported()
+        setPushSupported(supported)
+        if (supported) {
+          const subscribed = await isCurrentlySubscribed()
+          setNotificationsEnabled(subscribed)
+        }
+      } catch (err) {
+        console.error('Push check failed:', err)
+      } finally {
+        setIsLoadingPush(false)
       }
-      setIsLoadingPush(false)
     }
     checkPush()
   }, [])
