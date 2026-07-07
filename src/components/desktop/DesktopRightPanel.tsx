@@ -27,7 +27,9 @@ export function DesktopRightPanel() {
         <div className="w-full mt-4 text-[11px] text-slate-400/80">
           © 2026 Lost & Found
           <br/>
-          <span className="font-semibold text-slate-400">Powered by Veroseven</span>
+          <span className="font-semibold text-slate-400">
+            Powered by <a href="https://veroseven.netlify.app" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-slate-500 dark:hover:text-slate-400 transition-colors">Veroseven</a>
+          </span>
         </div>
       </div>
     </div>
