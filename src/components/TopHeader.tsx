@@ -46,8 +46,8 @@ export function TopHeader() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 px-4 h-14 flex items-center justify-between transition-colors">
       <Link to="/" className="flex items-center group">
-        <img src={logoLight} alt="Lost & Found" className="h-6 dark:hidden transition-transform group-hover:scale-105" />
-        <img src={logoDark} alt="Lost & Found" className="h-6 hidden dark:block transition-transform group-hover:scale-105" />
+        <img src={logoLight} alt="Lost & Found" className="h-8 dark:hidden transition-transform group-hover:scale-105" />
+        <img src={logoDark} alt="Lost & Found" className="h-8 hidden dark:block transition-transform group-hover:scale-105" />
       </Link>
 
       {!loading && (

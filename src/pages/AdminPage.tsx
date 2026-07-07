@@ -40,7 +40,7 @@ export function AdminPage() {
       {/* Logo */}
       <div className="px-6 py-6 border-b border-slate-700/50">
         <div className="flex flex-col items-start gap-3">
-          <img src={logoLight} alt="Lost & Found" className="h-7" />
+          <img src={logoLight} alt="Lost & Found" className="h-9" />
           <p className="text-primary-400 font-bold text-[10px] leading-tight tracking-widest uppercase">Admin Portal</p>
         </div>
       </div>

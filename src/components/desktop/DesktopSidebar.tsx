@@ -58,8 +58,8 @@ export function DesktopSidebar() {
     <div className="w-full h-full flex flex-col pt-8 pb-6 px-4">
       {/* Logo */}
       <div className="px-4 mb-10 flex items-center">
-        <img src={logoLight} alt="Lost & Found" className="h-8 dark:hidden" />
-        <img src={logoDark} alt="Lost & Found" className="h-8 hidden dark:block" />
+        <img src={logoLight} alt="Lost & Found" className="h-10 dark:hidden" />
+        <img src={logoDark} alt="Lost & Found" className="h-10 hidden dark:block" />
       </div>
 
       {/* Nav Links */}
