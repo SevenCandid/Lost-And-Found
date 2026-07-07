@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
-import { CATEGORY_GROUPS, ALL_CATEGORIES } from '../lib/categories'
+import { CATEGORY_GROUPS, ALL_CATEGORIES, ItemCategory } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
-import { Camera, MapPin, AlignLeft, Calendar } from 'lucide-react'
+import { Camera, MapPin, AlignLeft, Calendar, Umbrella, Smartphone, Laptop, Tablet, Battery, Headphones, HardDrive, Calculator, Book, FileText, CreditCard, Wallet, Briefcase, Key, GlassWater, Shirt, Watch, Package, Info } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { PillFilter } from '../components/ui/Badge'
@@ -29,6 +29,56 @@ export function ReportPage() {
   
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+
+  const isElectronics = CATEGORY_GROUPS['Electronics'].includes(category as any)
+  const isImageMandatory = type === 'lost'
+  const isImageAllowed = type === 'lost' || isElectronics
+
+  const getCategoryIcon = () => {
+    switch (category) {
+      case ItemCategory.PHONES: return <Smartphone size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.LAPTOPS: return <Laptop size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.TABLETS: return <Tablet size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.CHARGERS:
+      case ItemCategory.POWER_BANKS: return <Battery size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.EARBUDS:
+      case ItemCategory.HEADPHONES: return <Headphones size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.USB_DRIVES:
+      case ItemCategory.HARD_DRIVES: return <HardDrive size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.SCIENTIFIC_CALCULATORS:
+      case ItemCategory.GRAPHING_CALCULATORS: return <Calculator size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.BOOKS: return <Book size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.LECTURE_NOTES:
+      case ItemCategory.ASSIGNMENTS:
+      case ItemCategory.PROJECT_REPORTS: return <FileText size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.STUDENT_IDS:
+      case ItemCategory.NATIONAL_IDS:
+      case ItemCategory.PASSPORTS:
+      case ItemCategory.DRIVER_LICENSES:
+      case ItemCategory.ATM_CARDS: return <CreditCard size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.WALLETS:
+      case ItemCategory.PURSES: return <Wallet size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.BACKPACKS:
+      case ItemCategory.LAPTOP_BAGS:
+      case ItemCategory.HANDBAGS:
+      case ItemCategory.TRAVEL_BAGS: return <Briefcase size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.KEYS:
+      case ItemCategory.ROOM_KEYS:
+      case ItemCategory.CAR_KEYS:
+      case ItemCategory.PADLOCKS: return <Key size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.UMBRELLAS: return <Umbrella size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.WATER_BOTTLES: return <GlassWater size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.JACKETS:
+      case ItemCategory.HOODIES:
+      case ItemCategory.LAB_COATS:
+      case ItemCategory.SHOES:
+      case ItemCategory.SLIPPERS:
+      case ItemCategory.CAPS: return <Shirt size={40} className="mb-2 text-slate-400" />
+      case ItemCategory.WATCHES:
+      case ItemCategory.JEWELRY: return <Watch size={40} className="mb-2 text-slate-400" />
+      default: return <Package size={40} className="mb-2 text-slate-400" />
+    }
+  }
 
   const [custody, setCustody] = useState({
     holderType: null as HolderType | null,
@@ -62,6 +112,11 @@ export function ReportPage() {
       return
     }
 
+    if (isImageMandatory && !photo) {
+      toast.error('A photo is mandatory when reporting a lost item.')
+      return
+    }
+
     if (type === 'found') {
       if (!custody.holderType) {
         toast.error('Please indicate where the found item is being kept.')
@@ -82,8 +137,8 @@ export function ReportPage() {
     try {
       let imageUrl: string | null = null
 
-      // Upload photo if selected
-      if (photo) {
+      // Upload photo if selected and allowed
+      if (photo && isImageAllowed) {
         // Compress the image before uploading
         const options = {
           maxSizeMB: 0.5,
@@ -149,46 +204,60 @@ export function ReportPage() {
       </header>
 
       <form onSubmit={handleSubmit} className="flex-1 p-4 space-y-6 pb-24 max-w-md mx-auto w-full">
-        {/* Photo Upload */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic"
-          className="hidden"
-          onChange={handlePhotoSelect}
-          title="Upload Photo"
-        />
-        <div 
-          onClick={() => fileInputRef.current?.click()}
-          className={`w-full aspect-video rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden active:scale-[0.98] ${
-            photoPreview
-              ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20'
-              : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
-          }`}
-        >
-          {photoPreview ? (
-            <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-          ) : (
-            <>
-              <Camera size={40} className="mb-2 text-slate-400" />
-              <span className="font-medium text-slate-600 dark:text-slate-300">Add a clear photo</span>
-            </>
-          )}
-        </div>
+        {/* Photo Upload or Icon Display */}
+        {isImageAllowed ? (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic"
+              className="hidden"
+              onChange={handlePhotoSelect}
+              title="Upload Photo"
+            />
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className={`w-full aspect-video rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden active:scale-[0.98] ${
+                photoPreview
+                  ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                  : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+              }`}
+            >
+              {photoPreview ? (
+                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <>
+                  <Camera size={40} className="mb-2 text-slate-400" />
+                  <span className="font-medium text-slate-600 dark:text-slate-300">
+                    Add a clear photo {isImageMandatory && <span className="text-danger-500">*</span>}
+                  </span>
+                </>
+              )}
+            </div>
 
-        {photoPreview && (
-          <button
-            type="button"
-            className="-mt-4 text-sm text-slate-500 hover:text-primary-600 underline w-full text-center block"
-            onClick={(e) => {
-              e.stopPropagation()
-              setPhoto(null)
-              setPhotoPreview(null)
-              if (fileInputRef.current) fileInputRef.current.value = ''
-            }}
-          >
-            Remove photo
-          </button>
+            {photoPreview && (
+              <button
+                type="button"
+                className="-mt-4 text-sm text-slate-500 hover:text-primary-600 underline w-full text-center block"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setPhoto(null)
+                  setPhotoPreview(null)
+                  if (fileInputRef.current) fileInputRef.current.value = ''
+                }}
+              >
+                Remove photo
+              </button>
+            )}
+          </>
+        ) : (
+          <div className="w-full aspect-video rounded-3xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center p-6 text-center">
+            {getCategoryIcon()}
+            <h3 className="font-semibold text-slate-800 dark:text-white mt-2">Image Uploads Disabled</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              For security, photos cannot be uploaded for found {category.toLowerCase()}. This prevents fraudsters from falsely claiming the item based on a picture.
+            </p>
+          </div>
         )}
 
         {/* Type Toggle */}

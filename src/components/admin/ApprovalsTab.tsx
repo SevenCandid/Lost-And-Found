@@ -10,10 +10,11 @@ import { Database } from '../../lib/database.types'
 type Profile = Database['public']['Tables']['users']['Row']
 type Institution = Database['public']['Tables']['institutions']['Row'] & {
   require_admin_approval: boolean
+  require_claim_approval: boolean
 }
 
 type ConfirmState = 
-  | { type: 'toggle', newValue: boolean }
+  | { type: 'toggle', setting: 'require_admin_approval' | 'require_claim_approval', newValue: boolean }
   | { type: 'approve', userId: string }
   | { type: 'reject', userId: string }
   | null
@@ -57,9 +58,9 @@ export function ApprovalsTab() {
     }
   }
 
-  const handleToggleClick = () => {
+  const handleToggleClick = (setting: 'require_admin_approval' | 'require_claim_approval') => {
     if (!institution) return
-    setConfirmState({ type: 'toggle', newValue: !institution.require_admin_approval })
+    setConfirmState({ type: 'toggle', setting, newValue: !institution[setting] })
   }
 
   const handleActionClick = (userId: string, action: 'verified' | 'rejected') => {
@@ -67,34 +68,38 @@ export function ApprovalsTab() {
     if (action === 'reject') setRejectReason('')
   }
 
-  const executeToggle = async (newValue: boolean) => {
+  const executeToggle = async (setting: 'require_admin_approval' | 'require_claim_approval', newValue: boolean) => {
     setIsProcessing(true)
     try {
       const { error: updateError } = await supabase
         .from('institutions')
-        .update({ require_admin_approval: newValue })
+        .update({ [setting]: newValue })
         .eq('id', institution!.id)
       
       if (updateError) throw updateError
 
-      setInstitution(prev => prev ? { ...prev, require_admin_approval: newValue } : null)
+      setInstitution(prev => prev ? { ...prev, [setting]: newValue } : null)
       
-      if (!newValue) {
-        if (pendingUsers.length > 0) {
-          toast.loading('Verifying pending users...', { id: 'auto-verify' })
-          const { error: verifyError } = await supabase
-            .from('users')
-            .update({ verification_status: 'verified' })
-            .eq('verification_status', 'pending')
-          
-          if (verifyError) throw verifyError
-          setPendingUsers([])
-          toast.success('Admin approval disabled. Pending users verified.', { id: 'auto-verify' })
+      if (setting === 'require_admin_approval') {
+        if (!newValue) {
+          if (pendingUsers.length > 0) {
+            toast.loading('Verifying pending users...', { id: 'auto-verify' })
+            const { error: verifyError } = await supabase
+              .from('users')
+              .update({ verification_status: 'verified' })
+              .eq('verification_status', 'pending')
+            
+            if (verifyError) throw verifyError
+            setPendingUsers([])
+            toast.success('Admin user approval disabled. Pending users verified.', { id: 'auto-verify' })
+          } else {
+            toast.success('Admin user approval disabled for new users.')
+          }
         } else {
-          toast.success('Admin approval disabled for new users.')
+          toast.success('Admin user approval enabled. New users will require verification.')
         }
       } else {
-        toast.success('Admin approval enabled. New users will require verification.')
+        toast.success(`Claim approval ${newValue ? 'enabled' : 'disabled'}.`)
       }
     } catch (err: any) {
       toast.error('Failed to update settings')
@@ -131,7 +136,7 @@ export function ApprovalsTab() {
   const handleConfirm = () => {
     if (!confirmState) return
     if (confirmState.type === 'toggle') {
-      executeToggle(confirmState.newValue)
+      executeToggle(confirmState.setting, confirmState.newValue)
     } else if (confirmState.type === 'approve') {
       executeAction(confirmState.userId, 'verified')
     } else if (confirmState.type === 'reject') {
@@ -145,35 +150,68 @@ export function ApprovalsTab() {
 
   return (
     <div className="space-y-6">
-      {/* Settings Toggle */}
+      {/* Settings Toggles */}
       {institution && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between transition-colors">
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors ${institution.require_admin_approval ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-success-400'}`}>
-              {institution.require_admin_approval ? <ShieldAlert size={24} /> : <ShieldCheck size={24} />}
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* User Approval Toggle */}
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors ${institution.require_admin_approval ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-success-400'}`}>
+                {institution.require_admin_approval ? <ShieldAlert size={24} /> : <ShieldCheck size={24} />}
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 dark:text-white transition-colors">Require Admin Approval</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 transition-colors mt-0.5">
+                  {institution.require_admin_approval 
+                    ? 'New users must be verified manually.' 
+                    : 'New users are verified automatically.'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-slate-800 dark:text-white transition-colors">Require Admin Approval</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 transition-colors">
-                {institution.require_admin_approval 
-                  ? 'New users must be manually verified by an admin.' 
-                  : 'New users are automatically verified and can use the app immediately.'}
-              </p>
-            </div>
+            <button
+              onClick={() => handleToggleClick('require_admin_approval')}
+              disabled={isProcessing}
+              className={`relative inline-flex h-7 w-14 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+                institution.require_admin_approval ? 'bg-primary-500' : 'bg-slate-300 dark:bg-slate-600'
+              } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  institution.require_admin_approval ? 'translate-x-7' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
-          <button
-            onClick={handleToggleClick}
-            disabled={isProcessing}
-            className={`relative inline-flex h-7 w-14 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
-              institution.require_admin_approval ? 'bg-primary-500' : 'bg-slate-300 dark:bg-slate-600'
-            } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            <span
-              className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                institution.require_admin_approval ? 'translate-x-7' : 'translate-x-0'
-              }`}
-            />
-          </button>
+
+          {/* Claim Approval Toggle */}
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors ${institution.require_claim_approval ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-success-400'}`}>
+                {institution.require_claim_approval ? <ShieldAlert size={24} /> : <ShieldCheck size={24} />}
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 dark:text-white transition-colors">Require Claim Approval</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 transition-colors mt-0.5">
+                  {institution.require_claim_approval 
+                    ? 'Item claims must be approved by admin.' 
+                    : 'Claimers can message finders directly.'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => handleToggleClick('require_claim_approval')}
+              disabled={isProcessing}
+              className={`relative inline-flex h-7 w-14 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+                institution.require_claim_approval ? 'bg-primary-500' : 'bg-slate-300 dark:bg-slate-600'
+              } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  institution.require_claim_approval ? 'translate-x-7' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         </div>
       )}
 
@@ -260,23 +298,31 @@ export function ApprovalsTab() {
         isLoading={isProcessing}
         title={
           confirmState?.type === 'toggle' 
-            ? confirmState.newValue ? 'Enable Admin Approval?' : 'Disable Admin Approval?' 
+            ? confirmState.setting === 'require_admin_approval' 
+              ? confirmState.newValue ? 'Enable User Approval?' : 'Disable User Approval?'
+              : confirmState.newValue ? 'Enable Claim Approval?' : 'Disable Claim Approval?'
             : confirmState?.type === 'approve' 
             ? 'Approve Student?' 
             : 'Reject Student?'
         }
         description={
           confirmState?.type === 'toggle' 
-            ? confirmState.newValue 
-              ? 'Future users will need to be manually approved by an admin before they can report or claim items.' 
-              : 'All pending users will be automatically approved immediately, and future users will no longer require manual approval.'
+            ? confirmState.setting === 'require_admin_approval'
+              ? confirmState.newValue 
+                ? 'Future users will need to be manually approved by an admin before they can report or claim items.' 
+                : 'All pending users will be automatically approved immediately, and future users will no longer require manual approval.'
+              : confirmState.newValue
+                ? 'Claims will need to be manually approved by an admin.'
+                : 'Claimers will bypass admin approval and will simply be directed to message the finder.'
             : confirmState?.type === 'approve'
             ? 'Are you sure you want to approve this student? They will be able to report and claim items on the platform.'
             : 'Are you sure you want to reject this student? They will be notified and asked to submit better details.'
         }
         confirmText={
           confirmState?.type === 'toggle' 
-            ? confirmState.newValue ? 'Enable Approval' : 'Disable & Auto-Approve All'
+            ? confirmState.setting === 'require_admin_approval'
+              ? confirmState.newValue ? 'Enable Approval' : 'Disable & Auto-Approve All'
+              : confirmState.newValue ? 'Enable Claim Approval' : 'Disable Claim Approval'
             : confirmState?.type === 'approve' 
             ? 'Approve' 
             : 'Reject Student'

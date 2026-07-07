@@ -24,6 +24,7 @@ export function ItemDetailsPage() {
   
   const [item, setItem] = useState<Item | null>(null)
   const [reporter, setReporter] = useState<User | null>(null)
+  const [requireClaimApproval, setRequireClaimApproval] = useState<boolean>(true)
   const [isLoading, setIsLoading] = useState(true)
   
   const [isClaimSheetOpen, setIsClaimSheetOpen] = useState(false)
@@ -61,6 +62,17 @@ export function ItemDetailsPage() {
         setReporter(reporterData)
       }
 
+      // Fetch institution settings
+      const { data: instData } = await supabase
+        .from('institutions')
+        .select('require_claim_approval')
+        .limit(1)
+        .single()
+      
+      if (instData) {
+        setRequireClaimApproval(instData.require_claim_approval)
+      }
+
       setIsLoading(false)
     }
 
@@ -85,7 +97,53 @@ export function ItemDetailsPage() {
       return
     }
 
+    if (!requireClaimApproval) {
+      // If approval is bypassed, just open chat
+      startChat()
+      return
+    }
+
     setIsClaimSheetOpen(true)
+  }
+
+  const startChat = async () => {
+    if (!user || !item) {
+      toast.error('You must log in to send a message.')
+      navigate('/login', { state: { from: location.pathname } })
+      return
+    }
+    try {
+      // Check if room exists
+      const { data: existingRoom } = await supabase
+        .from('chat_rooms')
+        .select('id')
+        .eq('item_id', item.id)
+        .or(`and(user1_id.eq.${user.id},user2_id.eq.${item.reporter_id}),and(user1_id.eq.${item.reporter_id},user2_id.eq.${user.id})`)
+        .single()
+      
+      if (existingRoom) {
+        navigate(`/chat/${existingRoom.id}`)
+        return
+      }
+
+      // Create new room
+      const { data: newRoom, error } = await supabase
+        .from('chat_rooms')
+        .insert({
+          item_id: item.id,
+          user1_id: user.id,
+          user2_id: item.reporter_id
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      if (newRoom) {
+        navigate(`/chat/${newRoom.id}`)
+      }
+    } catch (err) {
+      toast.error('Could not start chat')
+    }
   }
 
   const handleClaim = async (e: React.FormEvent) => {
@@ -285,54 +343,24 @@ export function ItemDetailsPage() {
       {/* Sticky Bottom Action for Non-Reporter */}
       {item.status === 'active' && !isReporter && (
         <div className="sticky bottom-0 left-0 right-0 mt-auto p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe z-30 flex gap-3 transition-colors">
-          <Button 
-            variant="outline" 
-            className="flex-1 bg-white" 
-            onClick={async () => {
-              if (!user) {
-                toast.error('You must log in to send a message.')
-                navigate('/login', { state: { from: location.pathname } })
-                return
-              }
-              try {
-                // Check if room exists
-                const { data: existingRoom } = await supabase
-                  .from('chat_rooms')
-                  .select('id')
-                  .eq('item_id', item.id)
-                  .or(`and(user1_id.eq.${user.id},user2_id.eq.${item.reporter_id}),and(user1_id.eq.${item.reporter_id},user2_id.eq.${user.id})`)
-                  .single()
-                
-                if (existingRoom) {
-                  navigate(`/chat/${existingRoom.id}`)
-                  return
-                }
-
-                // Create new room
-                const { data: newRoom, error } = await supabase
-                  .from('chat_rooms')
-                  .insert({
-                    item_id: item.id,
-                    user1_id: user.id,
-                    user2_id: item.reporter_id
-                  })
-                  .select()
-                  .single()
-                
-                if (error) throw error
-                if (newRoom) {
-                  navigate(`/chat/${newRoom.id}`)
-                }
-              } catch (err) {
-                toast.error('Could not start chat')
-              }
-            }}
-          >
-            Message
-          </Button>
-          <Button className="flex-1" onClick={handleOpenClaim}>
-            {isLost ? 'I found this' : 'Claim this'}
-          </Button>
+          {!requireClaimApproval ? (
+            <Button className="flex-1" onClick={handleOpenClaim}>
+              {isLost ? 'Message Reporter' : 'Message Finder to Claim'}
+            </Button>
+          ) : (
+            <>
+              <Button 
+                variant="outline" 
+                className="flex-1 bg-white" 
+                onClick={startChat}
+              >
+                Message
+              </Button>
+              <Button className="flex-1" onClick={handleOpenClaim}>
+                {isLost ? 'I found this' : 'Claim this'}
+              </Button>
+            </>
+          )}
         </div>
       )}
 
