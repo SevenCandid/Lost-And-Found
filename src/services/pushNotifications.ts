@@ -62,7 +62,7 @@ export async function requestPushSubscription(userId: string): Promise<{ success
         endpoint: subscription.endpoint,
         p256dh,
         auth,
-      }, { onConflict: 'user_id,endpoint' })
+      }, { onConflict: 'push_subscriptions_user_id_endpoint_key' })
 
     if (error) {
       console.error('Error saving push subscription:', error)
