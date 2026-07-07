@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
       icon: "/icons/icon-192x192.png",
       badge: "/icons/icon-96x96.png",
       data: {
-        url: notification.action_url || "/notifications",
+        url: notification.link || notification.action_url || "/notifications",
         notification_id: notification.id,
       },
     });
