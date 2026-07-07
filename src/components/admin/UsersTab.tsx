@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Database } from '../../lib/database.types'
 import { EmptyState } from '../ui/EmptyState'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
 
 type Profile = Database['public']['Tables']['users']['Row']
 
@@ -11,6 +12,8 @@ export function UsersTab() {
   const [users, setUsers] = useState<Profile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [confirmState, setConfirmState] = useState<{ userId: string, newStatus: string } | null>(null)
 
   useEffect(() => {
     fetchUsers()
@@ -33,14 +36,18 @@ export function UsersTab() {
     }
   }
 
-  const toggleVerification = async (userId: string, currentStatus: string) => {
+  const toggleVerificationClick = (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'verified' ? 'pending' : 'verified'
-    
     if (newStatus === 'pending') {
-      const confirm = window.confirm('Are you sure you want to revoke verification for this user? They will not be able to report or claim items until verified again.')
-      if (!confirm) return
+      setConfirmState({ userId, newStatus })
+    } else {
+      // Direct execute if we are just approving
+      executeToggle(userId, newStatus)
     }
+  }
 
+  const executeToggle = async (userId: string, newStatus: string) => {
+    setIsProcessing(true)
     try {
       const { error } = await supabase
         .from('users')
@@ -53,6 +60,9 @@ export function UsersTab() {
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, verification_status: newStatus } : u))
     } catch (err: any) {
       toast.error('Failed to update user status')
+    } finally {
+      setIsProcessing(false)
+      setConfirmState(null)
     }
   }
 
@@ -107,7 +117,7 @@ export function UsersTab() {
             </div>
 
             <button 
-              onClick={() => toggleVerification(user.id, user.verification_status)}
+              onClick={() => toggleVerificationClick(user.id, user.verification_status)}
               className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-all ${
                 user.verification_status === 'verified' 
                   ? 'bg-slate-50 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-400' 
@@ -120,6 +130,19 @@ export function UsersTab() {
           </div>
         ))
       )}
+
+      <ConfirmDialog
+        isOpen={confirmState !== null}
+        onClose={() => setConfirmState(null)}
+        onConfirm={() => {
+          if (confirmState) executeToggle(confirmState.userId, confirmState.newStatus)
+        }}
+        isLoading={isProcessing}
+        title="Revoke Verification?"
+        description="Are you sure you want to revoke verification for this user? They will not be able to report or claim items until verified again."
+        confirmText="Revoke"
+        isDestructive={true}
+      />
     </div>
   )
 }

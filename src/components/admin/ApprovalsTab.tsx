@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Check, X, User, ShieldAlert, ShieldCheck } from 'lucide-react'
 import { EmptyState } from '../ui/EmptyState'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
+import { Input } from '../ui/Input'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Database } from '../../lib/database.types'
@@ -10,11 +12,20 @@ type Institution = Database['public']['Tables']['institutions']['Row'] & {
   require_admin_approval: boolean
 }
 
+type ConfirmState = 
+  | { type: 'toggle', newValue: boolean }
+  | { type: 'approve', userId: string }
+  | { type: 'reject', userId: string }
+  | null
+
 export function ApprovalsTab() {
   const [pendingUsers, setPendingUsers] = useState<Profile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [institution, setInstitution] = useState<Institution | null>(null)
-  const [isToggling, setIsToggling] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  
+  const [confirmState, setConfirmState] = useState<ConfirmState>(null)
+  const [rejectReason, setRejectReason] = useState('')
 
   useEffect(() => {
     fetchData()
@@ -46,16 +57,23 @@ export function ApprovalsTab() {
     }
   }
 
-  const handleToggleApproval = async () => {
+  const handleToggleClick = () => {
     if (!institution) return
-    setIsToggling(true)
+    setConfirmState({ type: 'toggle', newValue: !institution.require_admin_approval })
+  }
+
+  const handleActionClick = (userId: string, action: 'verified' | 'rejected') => {
+    setConfirmState({ type: action === 'verified' ? 'approve' : 'reject', userId })
+    if (action === 'reject') setRejectReason('')
+  }
+
+  const executeToggle = async (newValue: boolean) => {
+    setIsProcessing(true)
     try {
-      const newValue = !institution.require_admin_approval
-      
       const { error: updateError } = await supabase
         .from('institutions')
         .update({ require_admin_approval: newValue })
-        .eq('id', institution.id)
+        .eq('id', institution!.id)
       
       if (updateError) throw updateError
 
@@ -81,24 +99,19 @@ export function ApprovalsTab() {
     } catch (err: any) {
       toast.error('Failed to update settings')
     } finally {
-      setIsToggling(false)
+      setIsProcessing(false)
+      setConfirmState(null)
     }
   }
 
-  const handleAction = async (userId: string, action: 'verified' | 'rejected') => {
+  const executeAction = async (userId: string, action: 'verified' | 'rejected', reason?: string | null) => {
+    setIsProcessing(true)
     try {
-      let rejection_reason = null
-      if (action === 'rejected') {
-        const reason = window.prompt('Reason for rejection (optional):')
-        if (reason === null) return // Cancelled
-        rejection_reason = reason
-      }
-
       const { error } = await supabase
         .from('users')
         .update({ 
           verification_status: action,
-          rejection_reason
+          rejection_reason: reason || null
         })
         .eq('id', userId)
 
@@ -108,6 +121,21 @@ export function ApprovalsTab() {
       setPendingUsers(prev => prev.filter(u => u.id !== userId))
     } catch (err: any) {
       toast.error(`Failed to ${action} user`)
+    } finally {
+      setIsProcessing(false)
+      setConfirmState(null)
+      setRejectReason('')
+    }
+  }
+
+  const handleConfirm = () => {
+    if (!confirmState) return
+    if (confirmState.type === 'toggle') {
+      executeToggle(confirmState.newValue)
+    } else if (confirmState.type === 'approve') {
+      executeAction(confirmState.userId, 'verified')
+    } else if (confirmState.type === 'reject') {
+      executeAction(confirmState.userId, 'rejected', rejectReason)
     }
   }
 
@@ -134,11 +162,11 @@ export function ApprovalsTab() {
             </div>
           </div>
           <button
-            onClick={handleToggleApproval}
-            disabled={isToggling}
+            onClick={handleToggleClick}
+            disabled={isProcessing}
             className={`relative inline-flex h-7 w-14 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
               institution.require_admin_approval ? 'bg-primary-500' : 'bg-slate-300 dark:bg-slate-600'
-            } ${isToggling ? 'opacity-50 cursor-not-allowed' : ''}`}
+            } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <span
               className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
@@ -170,14 +198,14 @@ export function ApprovalsTab() {
             <div className="flex gap-2">
               <button 
                 title="Reject" 
-                onClick={() => handleAction(user.id, 'rejected')}
+                onClick={() => handleActionClick(user.id, 'rejected')}
                 className="w-10 h-10 rounded-full bg-danger-50 dark:bg-danger-500/10 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-100 dark:hover:bg-danger-500/20 active:scale-95 transition-all"
               >
                 <X size={20} />
               </button>
               <button 
                 title="Approve" 
-                onClick={() => handleAction(user.id, 'verified')}
+                onClick={() => handleActionClick(user.id, 'verified')}
                 className="w-10 h-10 rounded-full bg-success-50 dark:bg-success-500/10 text-success-500 dark:text-success-400 flex items-center justify-center hover:bg-success-100 dark:hover:bg-success-500/20 active:scale-95 transition-all"
               >
                 <Check size={20} />
@@ -220,6 +248,54 @@ export function ApprovalsTab() {
       ))}
       </div>
       )}
+
+      {/* Confirmation Dialogs */}
+      <ConfirmDialog
+        isOpen={confirmState !== null}
+        onClose={() => {
+          setConfirmState(null)
+          setRejectReason('')
+        }}
+        onConfirm={handleConfirm}
+        isLoading={isProcessing}
+        title={
+          confirmState?.type === 'toggle' 
+            ? confirmState.newValue ? 'Enable Admin Approval?' : 'Disable Admin Approval?' 
+            : confirmState?.type === 'approve' 
+            ? 'Approve Student?' 
+            : 'Reject Student?'
+        }
+        description={
+          confirmState?.type === 'toggle' 
+            ? confirmState.newValue 
+              ? 'Future users will need to be manually approved by an admin before they can report or claim items.' 
+              : 'All pending users will be automatically approved immediately, and future users will no longer require manual approval.'
+            : confirmState?.type === 'approve'
+            ? 'Are you sure you want to approve this student? They will be able to report and claim items on the platform.'
+            : 'Are you sure you want to reject this student? They will be notified and asked to submit better details.'
+        }
+        confirmText={
+          confirmState?.type === 'toggle' 
+            ? confirmState.newValue ? 'Enable Approval' : 'Disable & Auto-Approve All'
+            : confirmState?.type === 'approve' 
+            ? 'Approve' 
+            : 'Reject Student'
+        }
+        isDestructive={confirmState?.type === 'reject'}
+      >
+        {confirmState?.type === 'reject' && (
+          <div className="mt-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">Reason for Rejection (Optional)</label>
+            <Input
+              type="text"
+              placeholder="e.g. ID photo is blurry"
+              value={rejectReason}
+              onChange={e => setRejectReason(e.target.value)}
+              autoFocus
+            />
+          </div>
+        )}
+      </ConfirmDialog>
     </div>
   )
 }

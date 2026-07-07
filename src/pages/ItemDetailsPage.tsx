@@ -4,6 +4,7 @@ import { ChevronLeft, Share2, MapPin, Calendar, CheckCircle2 } from 'lucide-reac
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import { BottomSheet } from '../components/ui/BottomSheet'
+import { ConfirmDialog } from '../components/ui/ConfirmDialog'
 import { Input } from '../components/ui/Input'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -28,6 +29,7 @@ export function ItemDetailsPage() {
   const [isClaimSheetOpen, setIsClaimSheetOpen] = useState(false)
   const [proofDescription, setProofDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isReturnConfirmOpen, setIsReturnConfirmOpen] = useState(false)
 
   useEffect(() => {
     async function fetchItemDetails() {
@@ -121,11 +123,12 @@ export function ItemDetailsPage() {
     toast.success('Verification request sent to the reporter!')
   }
 
-  const handleMarkReturned = async () => {
-    if (!item) return
-    const confirmed = window.confirm('Are you sure you want to mark this item as returned? This action cannot be undone.')
-    if (!confirmed) return
+  const handleMarkReturnedClick = () => {
+    setIsReturnConfirmOpen(true)
+  }
 
+  const executeMarkReturned = async () => {
+    if (!item) return
     setIsSubmitting(true)
     const { error } = await supabase
       .from('items')
@@ -133,6 +136,8 @@ export function ItemDetailsPage() {
       .eq('id', item.id)
 
     setIsSubmitting(false)
+    setIsReturnConfirmOpen(false)
+
     if (error) {
       toast.error('Failed to update status.')
       return
@@ -336,7 +341,7 @@ export function ItemDetailsPage() {
         <div className="sticky bottom-0 left-0 right-0 mt-auto p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-safe z-30 transition-colors">
           <Button 
             fullWidth 
-            onClick={handleMarkReturned}
+            onClick={handleMarkReturnedClick}
             isLoading={isSubmitting}
           >
             Mark as Returned to Owner
@@ -364,6 +369,16 @@ export function ItemDetailsPage() {
           </Button>
         </form>
       </BottomSheet>
+      {/* Return Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isReturnConfirmOpen}
+        onClose={() => setIsReturnConfirmOpen(false)}
+        onConfirm={executeMarkReturned}
+        isLoading={isSubmitting}
+        title="Mark as Returned?"
+        description="Are you sure you want to mark this item as returned? This action cannot be undone."
+        confirmText="Mark as Returned"
+      />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Database } from '../../lib/database.types'
 import { EmptyState } from '../ui/EmptyState'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { formatDistanceToNow } from 'date-fns'
 
 type Item = Database['public']['Tables']['items']['Row']
@@ -13,6 +14,8 @@ export function ItemsTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'lost' | 'found'>('all')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [confirmState, setConfirmState] = useState<{ action: 'delete' | 'resolve', itemId: string } | null>(null)
 
   useEffect(() => {
     fetchItems()
@@ -34,41 +37,42 @@ export function ItemsTab() {
     }
   }
 
-  const handleDelete = async (itemId: string) => {
-    const confirm = window.confirm('Are you sure you want to permanently delete this item? This action cannot be undone.')
-    if (!confirm) return
-
-    try {
-      const { error } = await supabase
-        .from('items')
-        .delete()
-        .eq('id', itemId)
-
-      if (error) throw error
-
-      toast.success('Item deleted successfully')
-      setItems(prev => prev.filter(i => i.id !== itemId))
-    } catch (err: any) {
-      toast.error('Failed to delete item')
-    }
+  const handleActionClick = (itemId: string, action: 'delete' | 'resolve') => {
+    setConfirmState({ itemId, action })
   }
 
-  const handleResolve = async (itemId: string) => {
-    const confirm = window.confirm('Manually mark this item as resolved? It will be hidden from the active feed.')
-    if (!confirm) return
-
+  const executeAction = async () => {
+    if (!confirmState) return
+    const { action, itemId } = confirmState
+    
+    setIsProcessing(true)
     try {
-      const { error } = await supabase
-        .from('items')
-        .update({ status: 'resolved' })
-        .eq('id', itemId)
+      if (action === 'delete') {
+        const { error } = await supabase
+          .from('items')
+          .delete()
+          .eq('id', itemId)
 
-      if (error) throw error
+        if (error) throw error
 
-      toast.success('Item marked as resolved')
-      setItems(prev => prev.map(i => i.id === itemId ? { ...i, status: 'resolved' } : i))
+        toast.success('Item deleted successfully')
+        setItems(prev => prev.filter(i => i.id !== itemId))
+      } else {
+        const { error } = await supabase
+          .from('items')
+          .update({ status: 'resolved' })
+          .eq('id', itemId)
+
+        if (error) throw error
+
+        toast.success('Item marked as resolved')
+        setItems(prev => prev.map(i => i.id === itemId ? { ...i, status: 'resolved' } : i))
+      }
     } catch (err: any) {
-      toast.error('Failed to resolve item')
+      toast.error(`Failed to ${action} item`)
+    } finally {
+      setIsProcessing(false)
+      setConfirmState(null)
     }
   }
 
@@ -152,7 +156,7 @@ export function ItemsTab() {
               <div className="flex flex-col gap-1.5 shrink-0">
                 {item.status === 'active' && (
                   <button 
-                    onClick={() => handleResolve(item.id)}
+                    onClick={() => handleActionClick(item.id, 'resolve')}
                     className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700/50 text-emerald-500 dark:text-emerald-400 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-all"
                     title="Mark as Resolved"
                   >
@@ -160,7 +164,7 @@ export function ItemsTab() {
                   </button>
                 )}
                 <button 
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleActionClick(item.id, 'delete')}
                   className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700/50 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-all"
                   title="Delete Item"
                 >
@@ -171,6 +175,21 @@ export function ItemsTab() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={confirmState !== null}
+        onClose={() => setConfirmState(null)}
+        onConfirm={executeAction}
+        isLoading={isProcessing}
+        title={confirmState?.action === 'delete' ? 'Delete Item?' : 'Mark as Resolved?'}
+        description={
+          confirmState?.action === 'delete'
+            ? 'Are you sure you want to permanently delete this item? This action cannot be undone.'
+            : 'Are you sure you want to manually mark this item as resolved? It will be hidden from the active feed.'
+        }
+        confirmText={confirmState?.action === 'delete' ? 'Delete' : 'Mark Resolved'}
+        isDestructive={confirmState?.action === 'delete'}
+      />
     </div>
   )
 }

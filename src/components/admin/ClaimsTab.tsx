@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Database } from '../../lib/database.types'
 import { EmptyState } from '../ui/EmptyState'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { formatDistanceToNow } from 'date-fns'
 
 type Claim = Database['public']['Tables']['claims']['Row'] & {
@@ -14,6 +15,8 @@ type Claim = Database['public']['Tables']['claims']['Row'] & {
 export function ClaimsTab() {
   const [claims, setClaims] = useState<Claim[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [confirmState, setConfirmState] = useState<{ action: 'approved' | 'rejected', claimId: string, itemId: string } | null>(null)
 
   useEffect(() => {
     fetchClaims()
@@ -40,10 +43,15 @@ export function ClaimsTab() {
     }
   }
 
-  const handleClaim = async (claimId: string, itemId: string, action: 'approved' | 'rejected') => {
-    const confirm = window.confirm(`Are you sure you want to ${action} this claim?`)
-    if (!confirm) return
+  const handleActionClick = (claimId: string, itemId: string, action: 'approved' | 'rejected') => {
+    setConfirmState({ claimId, itemId, action })
+  }
 
+  const executeClaimAction = async () => {
+    if (!confirmState) return
+    const { action, claimId, itemId } = confirmState
+    
+    setIsProcessing(true)
     try {
       // Update claim status
       const { error: claimError } = await supabase
@@ -75,6 +83,9 @@ export function ClaimsTab() {
       setClaims(prev => prev.filter(c => c.id !== claimId))
     } catch (err: any) {
       toast.error(`Failed to ${action} claim`)
+    } finally {
+      setIsProcessing(false)
+      setConfirmState(null)
     }
   }
 
@@ -103,14 +114,14 @@ export function ClaimsTab() {
             </div>
             <div className="flex gap-2">
               <button 
-                onClick={() => handleClaim(claim.id, claim.item_id, 'rejected')}
+                onClick={() => handleActionClick(claim.id, claim.item_id, 'rejected')}
                 className="w-10 h-10 rounded-full bg-danger-50 dark:bg-danger-500/10 text-danger-500 dark:text-danger-400 flex items-center justify-center hover:bg-danger-100 dark:hover:bg-danger-500/20 active:scale-95 transition-all"
                 title="Reject Claim"
               >
                 <XCircle size={20} />
               </button>
               <button 
-                onClick={() => handleClaim(claim.id, claim.item_id, 'approved')}
+                onClick={() => handleActionClick(claim.id, claim.item_id, 'approved')}
                 className="w-10 h-10 rounded-full bg-success-50 dark:bg-success-500/10 text-success-500 dark:text-success-400 flex items-center justify-center hover:bg-success-100 dark:hover:bg-success-500/20 active:scale-95 transition-all"
                 title="Approve Claim"
               >
@@ -136,6 +147,21 @@ export function ClaimsTab() {
           </div>
         </div>
       ))}
+      
+      <ConfirmDialog
+        isOpen={confirmState !== null}
+        onClose={() => setConfirmState(null)}
+        onConfirm={executeClaimAction}
+        isLoading={isProcessing}
+        title={confirmState?.action === 'approved' ? 'Approve Claim?' : 'Reject Claim?'}
+        description={
+          confirmState?.action === 'approved'
+            ? 'Are you sure you want to approve this claim? The item will be marked as claimed and all other claims for this item will be rejected.'
+            : 'Are you sure you want to reject this claim? The user will not be able to claim this item.'
+        }
+        confirmText={confirmState?.action === 'approved' ? 'Approve Claim' : 'Reject Claim'}
+        isDestructive={confirmState?.action === 'rejected'}
+      />
     </div>
   )
 }
