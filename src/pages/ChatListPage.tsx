@@ -158,7 +158,7 @@ export function ChatListPage() {
                   </div>
                   
                   <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold truncate mb-1">
-                    Re: {room.item.title}
+                    Re: {room.item?.title || 'Deleted Item'}
                   </p>
                   
                   <p className={`text-sm truncate transition-colors ${room.last_message ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500 italic'}`}>

@@ -192,7 +192,7 @@ export function ChatRoomPage() {
               <h2 className="font-bold text-slate-800 dark:text-white truncate transition-colors">{otherUser?.full_name || 'Unknown User'}</h2>
               <div className="flex items-center gap-1 text-[10px] text-primary-600 dark:text-primary-400 font-medium truncate">
                 <Package size={10} />
-                <span className="truncate">Re: {room.item.title}</span>
+                <span className="truncate">Re: {room.item?.title || 'Deleted Item'}</span>
               </div>
             </div>
           </div>
