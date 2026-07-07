@@ -176,7 +176,7 @@ export function ItemDetailsPage() {
       }
     } else {
       try {
-        await navigator.clipboard.writeText(shareData.url)
+        await navigator.clipboard.writeText(shareData.url!)
         toast.success('Link copied to clipboard!')
       } catch (err) {
         toast.error('Failed to copy link')
